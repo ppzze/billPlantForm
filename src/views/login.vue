@@ -9,7 +9,7 @@ export default {
   components: {},
   data() {
     return {
-      item: [],
+      item: '',
     };
   },
   methods: {
@@ -18,10 +18,10 @@ export default {
       let res = await this.$http.get(`/proline/station/getLoginCode`);
       console.log(res);
       // 根据返回状态判断请求是否成功
-      if (res.data.meta.status == 200) {
-        this.item = res.data.message;
+      if (res.data.code == 20000) {
+        this.item = res.data.data;
         console.log(this.item);
-        this.$message({ message: res.data.meta.msg, type: "warning" });
+        this.$message({ message: res.data.message, type: "success" });
       } else {
         this.$message({ message: '获取信息失败', type: "warning" });
       }
