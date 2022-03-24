@@ -7,7 +7,7 @@ import router from './router'
 
 // axios封装地址
 const http = axios.create({
-    baseURL: 'https://www.chargestation.top', //地址在这里修改
+    baseURL: 'https://api-hmugo-web.itheima.net/', //地址在这里修改
 })
 // 添加请求拦截器，设置token
 http.interceptors.request.use(function(config) {

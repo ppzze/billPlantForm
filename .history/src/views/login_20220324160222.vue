@@ -15,7 +15,7 @@ export default {
   methods: {
     // 接口示例get，这个接口可用，用来体会下过程
     async fetch() {
-      let res = await this.$http.get(`/proline/station/getLoginCode`);
+      let res = await this.$http.get(`api/public/v1/categories`);
       console.log(res);
       // 根据返回状态判断请求是否成功
       if (res.data.meta.status == 200) {
