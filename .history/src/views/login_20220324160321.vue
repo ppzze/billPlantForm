@@ -21,9 +21,8 @@ export default {
       if (res.data.meta.status == 200) {
         this.item = res.data.message;
         console.log(this.item);
-        this.$message({ message: res.data.meta.msg, type: "warning" });
       } else {
-        this.$message({ message: '获取信息失败', type: "warning" });
+        this.$message({ message: res.data.meta.msg, type: "warning" });
       }
     },
     // 接口示例post,这个只是假设用法如何传值，接口无法使用
