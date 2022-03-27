@@ -18,6 +18,7 @@ export default {
   padding: 0;
   box-sizing: border-box;
   min-width: 1300px;
+  height:100%;
   min-height: 790px;
   /* max-width: 1520px; */
   margin: 0 auto;
@@ -31,7 +32,6 @@ export default {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-   /* height:100%; */
   /* min-width: 1000px; */
 }
 </style>

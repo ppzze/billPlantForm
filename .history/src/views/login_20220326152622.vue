@@ -69,7 +69,6 @@ export default {
     },
     // 请求登陆码状态
     async fetchType() {
-      
       let res = await this.$http.get(
         `/proline/station/getLoginState/?code=${this.item}`
       );
@@ -83,9 +82,6 @@ export default {
       //   this.$message({ message: '获取信息失败', type: "warning" });
       // }
     },
-    // dofetchType(){
-    //   setInterval(this.fetchType(),1000);
-    // },
     // 接口示例post,这个只是假设用法如何传值，接口无法使用
     async save() {
       let res = await this.$http.post(`student/group/new`, {
@@ -113,11 +109,11 @@ export default {
 
   async created() {
     await this.fetch();
-    await this.fetchType();
+    await setInterval(this.fetchType(),1000);
     
   },
   // mounted() {
-  //   this.dofetchType();
+  //   // this.creatQrCode();
   // },
 };
 </script>

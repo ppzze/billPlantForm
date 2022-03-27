@@ -31,7 +31,7 @@ export default {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-   /* height:100%; */
+  
   /* min-width: 1000px; */
 }
 </style>

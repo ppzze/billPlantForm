@@ -18,20 +18,19 @@ export default {
   padding: 0;
   box-sizing: border-box;
   min-width: 1300px;
-  min-height: 790px;
+  /* min-height: 880px; */
   /* max-width: 1520px; */
   margin: 0 auto;
   background: url('./views/img/背景.png') bottom center no-repeat #efeff4 ;
   background-size: 100% 100%;
   /* background-color: #80c1f4; */
-  /* min-height: 100vh; */
+  min-height: 100vh;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-   /* height:100%; */
   /* min-width: 1000px; */
 }
 </style>

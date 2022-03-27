@@ -1,36 +1,32 @@
 <template>
-  <div class="main">
-    <div class="MainTitle">
-      <div class="MainTitleImg">
+  <div class="main2">
+    <div class="MainTitle2">
+      <div class="MainTitleImg2">
         <img src="./img/logo.png" alt="">
       </div>
-      <div class="MainTitleName">
+      <div class="MainTitleName2">
         产&nbsp;线&nbsp;管&nbsp;理&nbsp;系&nbsp;统
       </div>
     </div>
-    <div class="MainContent" >
-      <div class="MainContentOne">
-        首&nbsp;先
+    <div class="MainContent2" >
+      <div class="MainContentOne2">
+        现&nbsp;在
       </div>
-      <div class="MainContentTwo">
-        <div class="word">
-          <span class="word1">扫&nbsp;描</span>
-          <span class="word2">屏&nbsp;幕&nbsp;二&nbsp;维&nbsp;码</span>
-          <span class="word3">以&nbsp;进&nbsp;行&nbsp;工&nbsp;站&nbsp;登&nbsp;录</span>
+      <div class="MainContentTwo2">
+        <div class="word2">
+          <span class="word12">扫&nbsp;描</span>
+          <span class="word22">员&nbsp;工&nbsp;二&nbsp;维&nbsp;码</span>
+          <span class="word32">以&nbsp;进&nbsp;行&nbsp;员&nbsp;工&nbsp;登&nbsp;录</span>
         </div>
-        <div class="qrcode" ref="qrCodeUrl"></div>
-        <div class="right">
-          <div class="throl">
+        <div class="right2">
+          <div class="throl2">
           
-        </div>
-        <div class="gun">
-          <span class="gun1">0 1</span>
-          <span class="gun2">0 2</span>
-        </div>
-        </div>
-      </div>
-      <!-- <div class="MainContentThree"></div> -->
-      
+          </div>
+          <div class="gun2">
+            <span class="gun12">0 1</span>
+            <span class="gun22">0 2</span>
+          </div>
+    </div>
     </div>
   </div>
 </template>
@@ -69,7 +65,6 @@ export default {
     },
     // 请求登陆码状态
     async fetchType() {
-      
       let res = await this.$http.get(
         `/proline/station/getLoginState/?code=${this.item}`
       );
@@ -83,9 +78,6 @@ export default {
       //   this.$message({ message: '获取信息失败', type: "warning" });
       // }
     },
-    // dofetchType(){
-    //   setInterval(this.fetchType(),1000);
-    // },
     // 接口示例post,这个只是假设用法如何传值，接口无法使用
     async save() {
       let res = await this.$http.post(`student/group/new`, {
@@ -114,19 +106,15 @@ export default {
   async created() {
     await this.fetch();
     await this.fetchType();
-    
   },
   // mounted() {
-  //   this.dofetchType();
+  //   // this.creatQrCode();
   // },
 };
 </script>
 
 <style scoped>
-.main{
-  height:100vh;
-}
-.main .MainTitle {
+.main2 .MainTitle2 {
   margin: 0 auto;
   width: 96%;
   height: 80px;
@@ -136,15 +124,14 @@ html,body{
     width: 100%;
     height: 100%;
 }
-.main .MainContent{
+.main2 .MainContent2{
   /* width: 96%; */
   height: 700px;
   min-height: 700px;
-  /* position: absolute; */
-  margin: 0 auto;
+  position: absolute;
   /* background-color: red; */
 }
-.main .MainTitle .MainTitleImg{
+.main2 .MainTitle2 .MainTitleImg2{
   width: 300px;
   height: 50px;
   float: left;
@@ -156,11 +143,11 @@ html,body{
   padding: 0 50px;
   border-right: 2px solid #767676;
 }
-.main .MainTitle .MainTitleImg img{
+.main2 .MainTitle2 .MainTitleImg2 img{
   width: 100%;
   height: 100%;
 }
-.main .MainTitle .MainTitleName{
+.main2 .MainTitle2 .MainTitleName2{
   float: left;
   height: 80px;
   margin-left: 50px;
@@ -171,54 +158,28 @@ html,body{
   border-bottom: 3px solid;
   border-image: linear-gradient(to right, #3356bb, #6caacc) 1;
 }
-.main .qrcode{
-    display: inline-block;
-}
-/deep/.qrcode img {
-        width: 200px;
-        height: 200px;
-        background-color: black; 
-        padding: 0 10px 10px 0; 
-        box-sizing: border-box;
-        
-        border-bottom:3px solid;
-        border-right: 3px solid;
-        border-image: linear-gradient(to bottom, #3768D2, #71BED4) 1;
-}
-.main .MainContent .MainContentOne{
+
+.main2 .MainContent2 .MainContentOne2{
   top: 230px;
   text-align: left;
   width: 200px;
   position: relative;
-  /* left: 280px; */
-  /* left: 30%; */
-  left:20%;
+  left: 580px;
   font-size: 16px;
   /* background-color: red; */
   color: #23BFEC;
   height: 20px;
 }
-.main .MainContent .MainContentTwo{
+.main2 .MainContent2 .MainContentTwo2{
   position: relative;
   top: 230px;
-  /* left: 280px; */
-  left: 20%;
-  /* left: 30%; */
+  left: 580px;
   height: 400px;
-  width: 1000px;
+  width: 600px;
   /* background-color: blue; */
 }
-.main .MainContent .MainContentThree{
-  position: relative;
-  text-align: left;
-  /* top: 420px; */
-  left: 280px;
-  height: 40px;
-  font-size: 16px;
-  color: white;
-  /* background-color: white; */
-}
-.main .MainContent .word{
+
+.main2 .MainContent2 .word2{
   text-align: left;
   float: left;
   /* display: inline-block; */
@@ -230,7 +191,7 @@ html,body{
   /* background-color: rgb(173, 15, 15); */
   margin-right: 50px;
 }
-.main .MainContent .word span{
+.main2 .MainContent2 .word2 span{
   width: 100px;
   height: 50px;
   /* float: left; */
@@ -239,19 +200,19 @@ html,body{
   text-align: left;
   line-height: 50px;
 }
-.main .MainContent .word .word1{
+.main2 .MainContent2 .word2 .word12{
   margin-top: 25px;
   font-weight: bold;
 }
-.main .MainContent .word .word2{
+.main2 .MainContent2 .word2 .word22{
   font-weight: bold;
 }
-.main .MainContent .word .word3{
+.main2 .MainContent2 .word2 .word32{
   font-size: 14px;
   height: 30px;
   margin-top: 40px;
 }
-.MainContent .throl{
+.MainContent2 .throl2{
   width: 100px;
   height: 120px;
   /* display: inline-block; */
@@ -262,20 +223,20 @@ html,body{
   border-right: 2px solid white;
   /* background-color: #fff; */
 }
-.MainContent .right{
+.MainContent2 .right2{
   width: 120px;
   height: 200px;
   
   /* background-color: red; */
   float: right;
 }
-.MainContent .gun{
+.MainContent2 .gun2{
   width: 40px;
   height: 60px;
   float: right;
   /* background-color: #fff; */
 }
-.MainContent .gun .gun1{
+.MainContent2 .gun2 .gun22{
   width: 40px;
   margin-top: 40px;
   height: 35px;
@@ -284,7 +245,7 @@ html,body{
   color: #23BFEC;
   text-align: center;
 }
-.MainContent .gun .gun2{
+.MainContent2 .gun2 .gun12{
   width: 40px;
   height: 15px;
   margin-top: 10px;
@@ -293,4 +254,5 @@ html,body{
   color: #fff;
   text-align: center;
 }
+
 </style>

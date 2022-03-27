@@ -18,7 +18,7 @@ export default {
   padding: 0;
   box-sizing: border-box;
   min-width: 1300px;
-  min-height: 790px;
+  min-height: 850px;
   /* max-width: 1520px; */
   margin: 0 auto;
   background: url('./views/img/背景.png') bottom center no-repeat #efeff4 ;
@@ -31,7 +31,6 @@ export default {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-   /* height:100%; */
   /* min-width: 1000px; */
 }
 </style>

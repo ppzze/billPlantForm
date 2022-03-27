@@ -69,7 +69,6 @@ export default {
     },
     // 请求登陆码状态
     async fetchType() {
-      
       let res = await this.$http.get(
         `/proline/station/getLoginState/?code=${this.item}`
       );
@@ -83,9 +82,6 @@ export default {
       //   this.$message({ message: '获取信息失败', type: "warning" });
       // }
     },
-    // dofetchType(){
-    //   setInterval(this.fetchType(),1000);
-    // },
     // 接口示例post,这个只是假设用法如何传值，接口无法使用
     async save() {
       let res = await this.$http.post(`student/group/new`, {
@@ -114,18 +110,14 @@ export default {
   async created() {
     await this.fetch();
     await this.fetchType();
-    
   },
   // mounted() {
-  //   this.dofetchType();
+  //   // this.creatQrCode();
   // },
 };
 </script>
 
 <style scoped>
-.main{
-  height:100vh;
-}
 .main .MainTitle {
   margin: 0 auto;
   width: 96%;
@@ -140,8 +132,7 @@ html,body{
   /* width: 96%; */
   height: 700px;
   min-height: 700px;
-  /* position: absolute; */
-  margin: 0 auto;
+  position: absolute;
   /* background-color: red; */
 }
 .main .MainTitle .MainTitleImg{
@@ -190,9 +181,7 @@ html,body{
   text-align: left;
   width: 200px;
   position: relative;
-  /* left: 280px; */
-  /* left: 30%; */
-  left:20%;
+  left: 280px;
   font-size: 16px;
   /* background-color: red; */
   color: #23BFEC;
@@ -201,9 +190,7 @@ html,body{
 .main .MainContent .MainContentTwo{
   position: relative;
   top: 230px;
-  /* left: 280px; */
-  left: 20%;
-  /* left: 30%; */
+  left: 280px;
   height: 400px;
   width: 1000px;
   /* background-color: blue; */
