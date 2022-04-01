@@ -48,19 +48,15 @@ export default {
   methods: {
     // 接口示例get，这个接口可用，用来体会下过程
 
-    // async test() {
-    //    this.timer = new Promise(resolve => {
-    //         setInterval(() => {
-    //             resolve(this.fetchType())
-    //         }, 2000)
-    //     });
-    //     return this.timer
-    // },
-    test(){
-     this.timer = setInterval(() => {this.fetchType()
+    async test() {
+       this.timer = new Promise(resolve => {
+            setInterval(() => {
+                resolve(this.fetchType())
             }, 2000)
+        });
+        return this.timer
     },
-    clear(){
+    async clear(){
       console.log('我要清除定时器')
       clearInterval(this.timer);
     },
@@ -73,7 +69,6 @@ export default {
       // 根据返回状态判断请求是否成功
       if (res.data.code == 20000) {
         this.item = res.data.data;
-        this.code = res.data.code;
         var qrcode = new QRCode(this.$refs.qrCodeUrl, {
             text: this.item, // 需要转换为二维码的内容
             width: 100,
@@ -83,7 +78,6 @@ export default {
             correctLevel: QRCode.CorrectLevel.H
         })
         console.log(qrcode);
-        console.log('我是login中的item',this.item)
         this.$message({ message: res.data.message, type: "success" });
       } else {
         this.$message({ message: "获取信息失败", type: "warning" });
@@ -98,22 +92,21 @@ export default {
       );
     
 
-      console.log('我是login第二步请求登录码的真实数据',this.item);
+      console.log('我是第二步请求登录码的真实数据',res.data.data);
       // {staffId: '', staffName: '', staffNum: '', state: 'WAIT_QR_CODE'}
       // 根据返回状态判断请求是否成功
       if (res.data.code == 20000) {
-        this.state = res.data.data.state;
-        if(this.state == 'WAIT_QR_CODE'){
+        this.item = res.data.data.state;
+        if(this.item == 'WAIT_QR_CODE'){
           this.$router.push({path:'/login2'})
-          this.clear()
+  
         }
-        else if(this.state == 'WAIT_STAFF_CODE '){
-          this.$router.push({path:'/login2',query: {code:res.data.code}});
-          this.clear()
+        else if(this.item == 'WAIT_STAFF_CODE '){
+          this.$router.push({path:'/login2'});
 
         }
-        else if (this.state == 'success'){
-          // this.$router.push({path:'/work'}) //,query: {id:res.data.data.staffId}
+        else if (this.item == 'success'){
+          this.$router.push({path:'/work'}) //,query: {id:res.data.data.staffId}
         }
         else{
           console.log('我是其他错误');
@@ -143,8 +136,8 @@ export default {
   async created() {
     await this.fetch();
     // await this.fetchType();
-    await this.test();
-    //  this.clear();
+     await this.test();
+     await this.clear();
   },
   
 

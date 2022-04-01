@@ -84,7 +84,13 @@
 </div>   
 </template>
 <script>
-
+import $ from 'jquery'
+ $('body').on('click',function (e) {
+            if ((($(e.target).attr('class') != 'showzhang')&&($(e.target).attr('class') != 'zhang'))) 
+            {
+              this.xianshi = false;
+            }
+        });
 export default{
   data(){
   return{
@@ -166,7 +172,7 @@ export default{
   }
 },
 methods:{
- 
+  
   changeImg(do1){
   var obj = document.getElementById("GongXUState")
      console.log(do1);
@@ -182,12 +188,8 @@ methods:{
        this.imagepath = require('./icon/blue-circle.png');
      }
   },
-  async getGongXu(){
-    let res = await this.$http.get(`proline/station/listEquipmentState/?positionId=p1`);
-    console.log('我是getGongXu里面的res',res)
-  },
   async fetchWork() {
-      let res = await this.$http.get(`/proline/station/getProcess/?positionId=p1`);
+      let res = await this.$http.get(`proline/station/listEquipmentState/?positionId=aaa`);
       console.log('我是res',res);
       // 成功读取并删
       // console.log('我是获取的员工id',localStorage.staffId)
@@ -251,15 +253,6 @@ methods:{
       this.warning = false;
           }, 8000)
   },
-  //  noShow(){
-  //   $('body').on('click',function (e) {
-  //           if ((($(e.target).attr('class') != 'showzhang'))) 
-  //           {
-  //             console.log('我是不显示故障！',this.xianshi)
-  //             this.xianshi = false;
-  //           }
-  //       });
-  // },
   showZhang(){
     this.zhanshi = false;
     this.xianshi = true;
@@ -268,14 +261,14 @@ methods:{
           }, 8000)
   }
 },
+
 async created() {
     await this.fetchWork();
-   await this.getGongXu();
+   
   },
 mounted() {
    this.fetchVideo();
     this.changeWarning();
-    // this.noShow();
   },
 }
 

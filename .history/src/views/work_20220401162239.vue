@@ -270,7 +270,7 @@ methods:{
 },
 async created() {
     await this.fetchWork();
-   await this.getGongXu();
+   
   },
 mounted() {
    this.fetchVideo();

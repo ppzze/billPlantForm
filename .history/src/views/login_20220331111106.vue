@@ -73,7 +73,6 @@ export default {
       // 根据返回状态判断请求是否成功
       if (res.data.code == 20000) {
         this.item = res.data.data;
-        this.code = res.data.code;
         var qrcode = new QRCode(this.$refs.qrCodeUrl, {
             text: this.item, // 需要转换为二维码的内容
             width: 100,
@@ -94,7 +93,7 @@ export default {
 
 
       let res = await this.$http.get(
-        `/proline/station/getLoginState/?code=${this.item}`
+        `/proline/station/getLoginState/?code=${res.data.code}`
       );
     
 

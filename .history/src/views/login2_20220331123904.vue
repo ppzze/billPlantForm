@@ -65,7 +65,7 @@ export default {
      if (res.data.code == 20000) {
         this.item = res.data.data.state;
         if (this.item == 'success'){
-          // 这是请求成功后  就把员工信息 存储到浏览器了
+          // 应该这么写 ， 这是请求成功后  就把员工信息 存储到浏览器了
           localStorage.staffId = res.data.data.staffId
           localStorage.staffName = res.data.data.staffName
           localStorage.staffNum = res.data.data.staffNum

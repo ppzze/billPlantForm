@@ -45,62 +45,38 @@ export default {
     };
   },
   methods: {
-    test2(){
-     this.timer2 = setInterval(() => {this.fetchType2()
-            }, 2000)
-    },
-    clear2(){
-      console.log('我要清除定时器')
-      clearInterval(this.timer2);
-    },
     // 请求登陆码状态
-    async fetchType2() {
+    async fetchType() {
       // const router = useRouter()
       // console.log('我是login传给login2的参数',router.currentRoute.value.query)
       let res = await this.$http.get(
         `/proline/station/getLoginState/?code=${this.item}`
       );
       console.log('我是login2222222里面的内容',res);
-      console.log('我是login2中的item',this.item)
      if (res.data.code == 20000) {
         this.item = res.data.data.state;
-        if (this.item == 'success'){
-          // 这是请求成功后  就把员工信息 存储到浏览器了
-          localStorage.staffId = res.data.data.staffId
-          localStorage.staffName = res.data.data.staffName
-          localStorage.staffNum = res.data.data.staffNum
-          this.$router.push({path:'/work'}) //,query: {id:res.data.data.staffId}
-          this.clear2()
-          this.startTime()
+        console.log(this.item);
+        //应该是 this.item == 'SUCCESS'
+        if(this.item == 'WAIT_QR_CODE'){
+          // localStorage.staffId = res.data.data.staffId;
+          localStorage.staffId = 1;
+          localStorage.staffName = res.data.data.staffName;
+          localStorage.staffNum = res.data.data.staffNum;
+          // this.$router.push('/work')
+          if(localStorage.staffId !== 'null'){
+            await this.startTime()
+          }
         }
         else{
-           // 测试一下行不行 先不让他自己跳转
-          localStorage.staffId = 1
-          localStorage.staffName = 2
-          localStorage.staffNum = 3
-          localStorage.code = this.item
-          console.log('我是其他错误');
-
-          // this.$router.push({path:'/work'})
-          this.clear2()
-          this.startTime()
+          console.log(this.item);
         }
-        }
+      } 
     },
     async startTime(){
-      
-      var start = new Date(new Date()).getTime();
-      var startTime1 = new Date(new Date().toLocaleDateString()).getTime(); // 当天0点
-      var endTime1 = new Date(new Date().toLocaleDateString()).getTime() +24 * 60 * 60 * 1000 -1;// 当天23:59
-      var during = endTime1 - start;
-      console.log('目前时间',start)
-      console.log('今天开始时间',startTime1)
-      console.log('今晚结束时间',endTime1)
-      console.log('持续时间',during)
-      return new Promise(resolve => {
+        return new Promise(resolve => {
             setTimeout(() => {
                 resolve(this.clearState())
-            }, during)
+            }, 6000)
         })
     },
     async clearState(){
@@ -114,10 +90,12 @@ export default {
 
   async created() {
     // await this.fetch();
-    // await this.fetchType2();
-    await this.test2();
+    await this.fetchType();
+    // await this.test();
   },
-  
+  // mounted() {
+  //   // this.creatQrCode();
+  // },
 };
 </script>
 

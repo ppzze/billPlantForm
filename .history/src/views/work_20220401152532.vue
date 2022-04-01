@@ -27,7 +27,7 @@
         障
       </div>
       <div class="showzhang" v-if="xianshi" >
-         <ul>
+         <ul @click.self="container">
            <li :key="guzhang.key" v-for="guzhang in guZhang">
                       <img style="width:22px;height:22px" 
                       src = './img/红点.png'>
@@ -84,7 +84,6 @@
 </div>   
 </template>
 <script>
-
 export default{
   data(){
   return{
@@ -166,7 +165,9 @@ export default{
   }
 },
 methods:{
- 
+  container() {
+      console.log('success')
+    },
   changeImg(do1){
   var obj = document.getElementById("GongXUState")
      console.log(do1);
@@ -182,12 +183,8 @@ methods:{
        this.imagepath = require('./icon/blue-circle.png');
      }
   },
-  async getGongXu(){
-    let res = await this.$http.get(`proline/station/listEquipmentState/?positionId=p1`);
-    console.log('我是getGongXu里面的res',res)
-  },
   async fetchWork() {
-      let res = await this.$http.get(`/proline/station/getProcess/?positionId=p1`);
+      let res = await this.$http.get(`proline/station/listEquipmentState/?positionId=aaa`);
       console.log('我是res',res);
       // 成功读取并删
       // console.log('我是获取的员工id',localStorage.staffId)
@@ -249,33 +246,24 @@ methods:{
   changeWarning(){
     setInterval(() => {
       this.warning = false;
-          }, 8000)
+          }, 5000)
   },
-  //  noShow(){
-  //   $('body').on('click',function (e) {
-  //           if ((($(e.target).attr('class') != 'showzhang'))) 
-  //           {
-  //             console.log('我是不显示故障！',this.xianshi)
-  //             this.xianshi = false;
-  //           }
-  //       });
-  // },
   showZhang(){
     this.zhanshi = false;
     this.xianshi = true;
     setInterval(() => {
       this.xianshi = false;
-          }, 8000)
+          }, 5000)
   }
 },
+
 async created() {
     await this.fetchWork();
-   await this.getGongXu();
+   
   },
 mounted() {
    this.fetchVideo();
     this.changeWarning();
-    // this.noShow();
   },
 }
 
@@ -413,7 +401,9 @@ float: left;
   z-index: 999;
 }
 .work .body .showzhang{
-  
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background: #5D5D5D;
   border-radius: 0px 12px 12px 0px;
   /* opacity: 0.5; */

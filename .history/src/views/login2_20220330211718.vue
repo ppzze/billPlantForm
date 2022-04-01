@@ -1,43 +1,42 @@
 <template>
-  <div class="main">
-    <div class="MainTitle">
-      <div class="MainTitleImg">
+  <div class="main2">
+    <div class="MainTitle2">
+      <div class="MainTitleImg2">
         <img src="./img/logo.png" alt="">
       </div>
-      <div class="MainTitleName">
+      <div class="MainTitleName2">
         产&nbsp;线&nbsp;管&nbsp;理&nbsp;系&nbsp;统
       </div>
     </div>
-    <div class="MainContent" >
-      <div class="MainContentOne">
-        首&nbsp;先
+    <div class="MainContent2" >
+      <div class="MainContentOne2">
+        现&nbsp;在
       </div>
-      <div class="MainContentTwo">
-        <div class="word">
-          <span class="word1">扫&nbsp;描</span>
-          <span class="word2">屏&nbsp;幕&nbsp;二&nbsp;维&nbsp;码</span>
-          <span class="word3">以&nbsp;进&nbsp;行&nbsp;工&nbsp;站&nbsp;登&nbsp;录</span>
+      <div class="MainContentTwo2">
+        <div class="word2">
+          <span class="word12">扫&nbsp;描</span>
+          <span class="word22">员&nbsp;工&nbsp;条&nbsp;形&nbsp;码</span>
+          <span class="word32">以&nbsp;进&nbsp;行&nbsp;员&nbsp;工&nbsp;登&nbsp;录</span>
         </div>
-        <div class="qrcode" ref="qrCodeUrl"></div>
-        <div class="right">
-          <div class="throl">
+        <div class="right2">
+          <div class="throl2">
           
-        </div>
-        <div class="gun">
-          <span class="gun1">0 1</span>
-          <span class="gun2">0 2</span>
-        </div>
-        </div>
-      </div>
-      <!-- <div class="MainContentThree"></div> -->
-      
+          </div>
+          <div class="gun2">
+            <span class="gun12">0 1</span>
+            <span class="gun22">0 2</span>
+          </div>
+    </div>
+    </div>
+  
+  
     </div>
   </div>
 </template>
 
 <script>
 import QRCode from 'qrcodejs2'
-// const axios = require('axios');
+import { useRouter } from 'vue-router'
 export default {
   components: {},
   data() {
@@ -46,34 +45,24 @@ export default {
     };
   },
   methods: {
-    // 接口示例get，这个接口可用，用来体会下过程
-
-    // async test() {
-    //    this.timer = new Promise(resolve => {
-    //         setInterval(() => {
-    //             resolve(this.fetchType())
-    //         }, 2000)
-    //     });
-    //     return this.timer
-    // },
-    test(){
-     this.timer = setInterval(() => {this.fetchType()
-            }, 2000)
-    },
-    clear(){
-      console.log('我要清除定时器')
-      clearInterval(this.timer);
-    },
     
-   
-
+    async test() {
+      return new Promise(resolve => {
+          setInterval(() => {
+              resolve(this.fetchType())
+          }, 1000)
+      })
+    },
+    // 接口示例get，这个接口可用，用来体会下过程
     async fetch() {
+      // var co = $route.query.code
+      const router = useRouter()
+      console.log('我是login传给login2的参数',router.currentRoute.value.query)
       let res = await this.$http.get(`/proline/station/getLoginCode`);
-      console.log('我是res',res);
+      console.log('我是login2中的res',res);
       // 根据返回状态判断请求是否成功
       if (res.data.code == 20000) {
         this.item = res.data.data;
-        this.code = res.data.code;
         var qrcode = new QRCode(this.$refs.qrCodeUrl, {
             text: this.item, // 需要转换为二维码的内容
             width: 100,
@@ -83,7 +72,6 @@ export default {
             correctLevel: QRCode.CorrectLevel.H
         })
         console.log(qrcode);
-        console.log('我是login中的item',this.item)
         this.$message({ message: res.data.message, type: "success" });
       } else {
         this.$message({ message: "获取信息失败", type: "warning" });
@@ -91,35 +79,40 @@ export default {
     },
     // 请求登陆码状态
     async fetchType() {
-
-
       let res = await this.$http.get(
         `/proline/station/getLoginState/?code=${this.item}`
       );
-    
-
-      console.log('我是login第二步请求登录码的真实数据',this.item);
-      // {staffId: '', staffName: '', staffNum: '', state: 'WAIT_QR_CODE'}
-      // 根据返回状态判断请求是否成功
-      if (res.data.code == 20000) {
-        this.state = res.data.data.state;
-        if(this.state == 'WAIT_QR_CODE'){
-          this.$router.push({path:'/login2'})
-          this.clear()
-        }
-        else if(this.state == 'WAIT_STAFF_CODE '){
-          this.$router.push({path:'/login2',query: {code:res.data.code}});
-          this.clear()
-
-        }
-        else if (this.state == 'success'){
-          // this.$router.push({path:'/work'}) //,query: {id:res.data.data.staffId}
+      console.log(res);
+     if (res.data.code == 20000) {
+        this.item = res.data.data.state;
+        console.log(this.item);
+        //应该是 this.item == 'SUCCESS'
+        if(this.item == 'WAIT_QR_CODE'){
+          // localStorage.staffId = res.data.data.staffId;
+          localStorage.staffId = 1;
+          localStorage.staffName = res.data.data.staffName;
+          localStorage.staffNum = res.data.data.staffNum;
+          // this.$router.push('/work')
+          if(localStorage.staffId !== 'null'){
+            await this.startTime()
+          }
         }
         else{
-          console.log('我是其他错误');
+          console.log(this.item);
         }
       } 
-      
+    },
+    async startTime(){
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve(this.clearState())
+            }, 6000)
+        })
+    },
+    async clearState(){
+        localStorage.clear();  //localStorage.clear()是清除所有的存储内容 
+        console.log('清除localstore信息成功！')
+        // localStorage.removeItem('staffId') //localStorage.clear()是清除这一项的存储内容
     },
     // 接口示例post,这个只是假设用法如何传值，接口无法使用
     async save() {
@@ -135,31 +128,23 @@ export default {
     },
     
   },
-  // created(){
-  //   this.fetch();
-  //   this.test();
-  // }
 
   async created() {
-    await this.fetch();
-    // await this.fetchType();
-    await this.test();
-    //  this.clear();
+    // await this.fetch();
+    await this.fetchType();
+    // await this.test();
   },
-  
-
-
   // mounted() {
-  //   this.test();
+  //   // this.creatQrCode();
   // },
 };
 </script>
 
 <style scoped>
-.main{
-  height:100vh;
+.main2{
+  height: 100vh;
 }
-.main .MainTitle {
+.main2 .MainTitle2 {
   margin: 0 auto;
   width: 96%;
   height: 80px;
@@ -169,15 +154,14 @@ html,body{
     width: 100%;
     height: 100%;
 }
-.main .MainContent{
+.main2 .MainContent2{
   /* width: 96%; */
   height: 700px;
   min-height: 700px;
-  /* position: absolute; */
-  margin: 0 auto;
+  position: absolute;
   /* background-color: red; */
 }
-.main .MainTitle .MainTitleImg{
+.main2 .MainTitle2 .MainTitleImg2{
   width: 300px;
   height: 50px;
   float: left;
@@ -189,11 +173,11 @@ html,body{
   padding: 0 50px;
   border-right: 2px solid #767676;
 }
-.main .MainTitle .MainTitleImg img{
+.main2 .MainTitle2 .MainTitleImg2 img{
   width: 100%;
   height: 100%;
 }
-.main .MainTitle .MainTitleName{
+.main2 .MainTitle2 .MainTitleName2{
   float: left;
   height: 80px;
   margin-left: 50px;
@@ -204,54 +188,28 @@ html,body{
   border-bottom: 3px solid;
   border-image: linear-gradient(to right, #3356bb, #6caacc) 1;
 }
-.main .qrcode{
-    display: inline-block;
-}
-/deep/.qrcode img {
-        width: 200px;
-        height: 200px;
-        background-color: black; 
-        padding: 0 10px 10px 0; 
-        box-sizing: border-box;
-        
-        border-bottom:3px solid;
-        border-right: 3px solid;
-        border-image: linear-gradient(to bottom, #3768D2, #71BED4) 1;
-}
-.main .MainContent .MainContentOne{
+
+.main2 .MainContent2 .MainContentOne2{
   top: 230px;
   text-align: left;
   width: 200px;
   position: relative;
-  /* left: 280px; */
-  /* left: 30%; */
-  left:20%;
+  left: 580px;
   font-size: 16px;
   /* background-color: red; */
   color: #23BFEC;
   height: 20px;
 }
-.main .MainContent .MainContentTwo{
+.main2 .MainContent2 .MainContentTwo2{
   position: relative;
   top: 230px;
-  /* left: 280px; */
-  left: 20%;
-  /* left: 30%; */
+  left: 580px;
   height: 400px;
-  width: 1000px;
+  width: 600px;
   /* background-color: blue; */
 }
-.main .MainContent .MainContentThree{
-  position: relative;
-  text-align: left;
-  /* top: 420px; */
-  left: 280px;
-  height: 40px;
-  font-size: 16px;
-  color: white;
-  /* background-color: white; */
-}
-.main .MainContent .word{
+
+.main2 .MainContent2 .word2{
   text-align: left;
   float: left;
   /* display: inline-block; */
@@ -263,7 +221,7 @@ html,body{
   /* background-color: rgb(173, 15, 15); */
   margin-right: 50px;
 }
-.main .MainContent .word span{
+.main2 .MainContent2 .word2 span{
   width: 100px;
   height: 50px;
   /* float: left; */
@@ -272,19 +230,19 @@ html,body{
   text-align: left;
   line-height: 50px;
 }
-.main .MainContent .word .word1{
+.main2 .MainContent2 .word2 .word12{
   margin-top: 25px;
   font-weight: bold;
 }
-.main .MainContent .word .word2{
+.main2 .MainContent2 .word2 .word22{
   font-weight: bold;
 }
-.main .MainContent .word .word3{
+.main2 .MainContent2 .word2 .word32{
   font-size: 14px;
   height: 30px;
   margin-top: 40px;
 }
-.MainContent .throl{
+.MainContent2 .throl2{
   width: 100px;
   height: 120px;
   /* display: inline-block; */
@@ -295,35 +253,36 @@ html,body{
   border-right: 2px solid white;
   /* background-color: #fff; */
 }
-.MainContent .right{
+.MainContent2 .right2{
   width: 120px;
   height: 200px;
   
   /* background-color: red; */
   float: right;
 }
-.MainContent .gun{
+.MainContent2 .gun2{
   width: 40px;
   height: 60px;
   float: right;
   /* background-color: #fff; */
 }
-.MainContent .gun .gun1{
+.MainContent2 .gun2 .gun22{
   width: 40px;
-  margin-top: 40px;
+  margin-top: 10px;
   height: 35px;
   font-size: 25px;
   display: block;
   color: #23BFEC;
   text-align: center;
 }
-.MainContent .gun .gun2{
+.MainContent2 .gun2 .gun12{
   width: 40px;
   height: 15px;
-  margin-top: 10px;
+  margin-top: 30px;
   font-size: 15px;
   display: block;
   color: #fff;
   text-align: center;
 }
+
 </style>

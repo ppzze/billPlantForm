@@ -182,12 +182,8 @@ methods:{
        this.imagepath = require('./icon/blue-circle.png');
      }
   },
-  async getGongXu(){
-    let res = await this.$http.get(`proline/station/listEquipmentState/?positionId=p1`);
-    console.log('我是getGongXu里面的res',res)
-  },
   async fetchWork() {
-      let res = await this.$http.get(`/proline/station/getProcess/?positionId=p1`);
+      let res = await this.$http.get(`proline/station/listEquipmentState/?positionId=aaa`);
       console.log('我是res',res);
       // 成功读取并删
       // console.log('我是获取的员工id',localStorage.staffId)
@@ -270,7 +266,7 @@ methods:{
 },
 async created() {
     await this.fetchWork();
-   await this.getGongXu();
+   
   },
 mounted() {
    this.fetchVideo();

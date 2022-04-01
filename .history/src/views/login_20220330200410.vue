@@ -37,7 +37,7 @@
 
 <script>
 import QRCode from 'qrcodejs2'
-// const axios = require('axios');
+const axios = require('axios');
 export default {
   components: {},
   data() {
@@ -48,24 +48,17 @@ export default {
   methods: {
     // 接口示例get，这个接口可用，用来体会下过程
 
-    // async test() {
-    //    this.timer = new Promise(resolve => {
-    //         setInterval(() => {
-    //             resolve(this.fetchType())
-    //         }, 2000)
-    //     });
-    //     return this.timer
-    // },
-    test(){
-     this.timer = setInterval(() => {this.fetchType()
+    test() {
+       this.timer = new Promise(resolve => {
+            setInterval(() => {
+                resolve(this.fetchType())
             }, 2000)
+        });
+        console.log('1')
+        return this.timer
+        
     },
-    clear(){
-      console.log('我要清除定时器')
-      clearInterval(this.timer);
-    },
-    
-   
+
 
     async fetch() {
       let res = await this.$http.get(`/proline/station/getLoginCode`);
@@ -73,7 +66,6 @@ export default {
       // 根据返回状态判断请求是否成功
       if (res.data.code == 20000) {
         this.item = res.data.data;
-        this.code = res.data.code;
         var qrcode = new QRCode(this.$refs.qrCodeUrl, {
             text: this.item, // 需要转换为二维码的内容
             width: 100,
@@ -83,7 +75,6 @@ export default {
             correctLevel: QRCode.CorrectLevel.H
         })
         console.log(qrcode);
-        console.log('我是login中的item',this.item)
         this.$message({ message: res.data.message, type: "success" });
       } else {
         this.$message({ message: "获取信息失败", type: "warning" });
@@ -91,29 +82,31 @@ export default {
     },
     // 请求登陆码状态
     async fetchType() {
-
-
+      
+// var CancelToken = axios.CancelToken;
+// var source = CancelToken.source();
+let CancelToken = axios.CancelToken
       let res = await this.$http.get(
-        `/proline/station/getLoginState/?code=${this.item}`
+        `/proline/station/getLoginState/?code=${this.item}`, {
+        cancelToken: new CancelToken(function executor(c) {
+          self.cancel = c // 这个参数 c 就是CancelToken构造函数里面自带的取消请求的函数，这里把该函数当参数用
+        })}
       );
     
 
-      console.log('我是login第二步请求登录码的真实数据',this.item);
+      console.log('我是第二步请求登录码的真实数据',res.data.data);
       // {staffId: '', staffName: '', staffNum: '', state: 'WAIT_QR_CODE'}
       // 根据返回状态判断请求是否成功
       if (res.data.code == 20000) {
-        this.state = res.data.data.state;
-        if(this.state == 'WAIT_QR_CODE'){
+        this.item = res.data.data.state;
+        if(this.item == 'WAIT_QR_CODE'){
           this.$router.push({path:'/login2'})
-          this.clear()
         }
-        else if(this.state == 'WAIT_STAFF_CODE '){
-          this.$router.push({path:'/login2',query: {code:res.data.code}});
-          this.clear()
-
+        else if(this.item == 'WAIT_STAFF_CODE '){
+          this.$router.push({path:'/login2'});
         }
-        else if (this.state == 'success'){
-          // this.$router.push({path:'/work'}) //,query: {id:res.data.data.staffId}
+        else if (this.item == 'success'){
+          this.$router.push({path:'/work'}) //,query: {id:res.data.data.staffId}
         }
         else{
           console.log('我是其他错误');
@@ -143,11 +136,14 @@ export default {
   async created() {
     await this.fetch();
     // await this.fetchType();
-    await this.test();
-    //  this.clear();
+     this.test();
+    
   },
   
-
+beforeDestroy() {
+    clearInterval(this.timer);        
+    this.timer = null;
+}
 
   // mounted() {
   //   this.test();

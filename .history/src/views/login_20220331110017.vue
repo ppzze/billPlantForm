@@ -73,7 +73,6 @@ export default {
       // 根据返回状态判断请求是否成功
       if (res.data.code == 20000) {
         this.item = res.data.data;
-        this.code = res.data.code;
         var qrcode = new QRCode(this.$refs.qrCodeUrl, {
             text: this.item, // 需要转换为二维码的内容
             width: 100,
@@ -102,17 +101,17 @@ export default {
       // {staffId: '', staffName: '', staffNum: '', state: 'WAIT_QR_CODE'}
       // 根据返回状态判断请求是否成功
       if (res.data.code == 20000) {
-        this.state = res.data.data.state;
-        if(this.state == 'WAIT_QR_CODE'){
+        this.item = res.data.data.state;
+        if(this.item == 'WAIT_QR_CODE'){
           this.$router.push({path:'/login2'})
           this.clear()
         }
-        else if(this.state == 'WAIT_STAFF_CODE '){
+        else if(this.item == 'WAIT_STAFF_CODE '){
           this.$router.push({path:'/login2',query: {code:res.data.code}});
           this.clear()
 
         }
-        else if (this.state == 'success'){
+        else if (this.item == 'success'){
           // this.$router.push({path:'/work'}) //,query: {id:res.data.data.staffId}
         }
         else{

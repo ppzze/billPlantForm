@@ -26,7 +26,7 @@
       <div class="zhang" @click="showZhang" v-show="zhanshi">
         障
       </div>
-      <div class="showzhang" v-if="xianshi" >
+      <div class="showzhang" v-if="xianshi">
          <ul>
            <li :key="guzhang.key" v-for="guzhang in guZhang">
                       <img style="width:22px;height:22px" 
@@ -69,7 +69,6 @@
                   </ul>
 
                    <ul :key="gongxu" v-for="gongxu in label">
-                     <div> <img style="width:22px;height:22px"  > {{gongxu}}</div>
                     <li :key="video.fileUrl" v-for="video in paper[gongxu]">
                       <img style="width:22px;height:22px" 
                       @click="changeImg(gongxu.do)"
@@ -84,7 +83,6 @@
 </div>   
 </template>
 <script>
-
 export default{
   data(){
   return{
@@ -166,7 +164,6 @@ export default{
   }
 },
 methods:{
- 
   changeImg(do1){
   var obj = document.getElementById("GongXUState")
      console.log(do1);
@@ -182,17 +179,9 @@ methods:{
        this.imagepath = require('./icon/blue-circle.png');
      }
   },
-  async getGongXu(){
-    let res = await this.$http.get(`proline/station/listEquipmentState/?positionId=p1`);
-    console.log('我是getGongXu里面的res',res)
-  },
   async fetchWork() {
-      let res = await this.$http.get(`/proline/station/getProcess/?positionId=p1`);
+      let res = await this.$http.get(`proline/station/listEquipmentState/?positionId=aaa`);
       console.log('我是res',res);
-      // 成功读取并删
-      // console.log('我是获取的员工id',localStorage.staffId)
-      // localStorage.removeItem('staffId')
-      // console.log('我是获取的员工id',localStorage.staffId)
       // https://blog.csdn.net/wwf1225/article/details/90603139
       // 根据返回状态判断请求是否成功
       if (res.data.code == 20000) {
@@ -224,7 +213,7 @@ methods:{
           // var process = 'p'+ res.data.data[i].procedureId.split('p')[1]
           if(this.paper[step] == null)
           {
-            this.paper[step] = [];
+            this.paper[step] == [];
             this.label.push(step);
           }
           var video ={}
@@ -232,13 +221,13 @@ methods:{
           video.fileUrl = res.data.data[i].fileUrl
           video.procedureId = res.data.data[i].procedureId
           console.log(i,step)
-          this.paper[step].push(video)
+          this.paper[2].push(video)
         }
         // 以{ procedureId = s1p1 ，fileUrl=‘1’}，{ procedureId = s1p2 ，fileUrl=‘1’}，{ procedureId = s2p1 ，fileUrl=‘2’}
         //  下面是处理后的结果：
         // paper数组【  
         // s1（工序一）数组：【{procedureId = s1p1 ，fileUrl=‘1’}，{ procedureId = s1p2 ，fileUrl=‘1’}】
-        // s2（工序er）数组：【{procedureId = s2p1 ，fileUrl=‘2’}】
+        // s1（工序一）数组：【{procedureId = s2p1 ，fileUrl=‘2’}】
         // 】
         console.log('所获取的视频如下：',this.paper)
 
@@ -249,33 +238,24 @@ methods:{
   changeWarning(){
     setInterval(() => {
       this.warning = false;
-          }, 8000)
+          }, 5000)
   },
-  //  noShow(){
-  //   $('body').on('click',function (e) {
-  //           if ((($(e.target).attr('class') != 'showzhang'))) 
-  //           {
-  //             console.log('我是不显示故障！',this.xianshi)
-  //             this.xianshi = false;
-  //           }
-  //       });
-  // },
   showZhang(){
     this.zhanshi = false;
     this.xianshi = true;
     setInterval(() => {
       this.xianshi = false;
-          }, 8000)
+          }, 5000)
   }
 },
+
 async created() {
     await this.fetchWork();
-   await this.getGongXu();
+   
   },
 mounted() {
    this.fetchVideo();
     this.changeWarning();
-    // this.noShow();
   },
 }
 
@@ -413,7 +393,6 @@ float: left;
   z-index: 999;
 }
 .work .body .showzhang{
-  
   background: #5D5D5D;
   border-radius: 0px 12px 12px 0px;
   /* opacity: 0.5; */
