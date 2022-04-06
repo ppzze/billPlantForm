@@ -17,9 +17,12 @@
     "node-sass": "^4.14.1",
     "qrcodejs2": "0.0.2",
     "swiper": "^5.4.5",
+    "video.js": "^7.18.1",
+    "videojs-contrib-hls": "^5.15.0",
     "vue": "^2.6.11",
     "vue-awesome-swiper": "^4.1.1",
-    "vue-router": "^3.2.0"
+    "vue-router": "^3.2.0",
+    "vue-video-player": "^5.0.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
