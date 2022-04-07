@@ -74,14 +74,11 @@ export default {
         // 如果positionID为空  重新获取二维码了 直接进行轮询 每两秒获取一次fetchType()
         let res = await this.$http.get(`/proline/station/getLoginCode/?positionId=${localStorage.positionId}`);
         console.log(res)
-        if (res.data.code == 20000) {
-          if (staffId !== "" && staffName !== "" && staffNum !== "") {
+        if (staffId !== "" && staffName !== "" && staffNum !== "") {
           this.$router.push({ path: "/work" });
         } else {
           this.$router.push({ path: "/login2" });
         }
-        }
-        
       } else {
         let res = await this.$http.get(`/proline/station/getLoginCode`);
         console.log("我是res", res);

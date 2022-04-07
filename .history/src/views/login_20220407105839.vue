@@ -63,25 +63,22 @@ export default {
       clearInterval(this.timer);
     },
     async fetch() {
-      var positionId = localStorage.positionId;
+      var positionID = localStorage.positionID;
       var staffId = localStorage.staffId;
       var staffName = localStorage.staffName;
       var staffNum = localStorage.staffNum;
-      if (positionId !== "" && positionId !== undefined) {
+      if (positionID !== "") {
         //如果positionID 不为空 ，就不需要获取二维码了
         //  查有没有员工状态  如果有 就跳到work界面
         //                  如果没有 就跳到login2界面
         // 如果positionID为空  重新获取二维码了 直接进行轮询 每两秒获取一次fetchType()
-        let res = await this.$http.get(`/proline/station/getLoginCode/?positionId=${localStorage.positionId}`);
+        let res = await this.$http.get(`/proline/station/getLoginCode/positionID=${localStorage.positionID}`);
         console.log(res)
-        if (res.data.code == 20000) {
-          if (staffId !== "" && staffName !== "" && staffNum !== "") {
-          this.$router.push({ path: "/work" });
+        if (staffId !== "" && staffName !== "" && staffNum !== "") {
+          this.$router.push({ path: "work" });
         } else {
-          this.$router.push({ path: "/login2" });
+          this.$router.push({ path: "login2" });
         }
-        }
-        
       } else {
         let res = await this.$http.get(`/proline/station/getLoginCode`);
         console.log("我是res", res);
@@ -132,12 +129,12 @@ export default {
           localStorage.staffName = res.data.data.staffName;
           localStorage.staffNum = res.data.data.staffNum;
           localStorage.positionId = res.data.data.positionId;
-          this.$router.push({ path: "/work" });
+          this.$router.push({ path: "work" });
           this.clear();
           this.startTime();
         } else if (this.state == "WAIT_STAFF_CODE") {
           console.log("尚未获取到员工信息");
-          this.$router.push({ path: "/login2" });
+          this.$router.push({ path: "login2" });
         } else {
           console.log("尚未获取到信息");
         }

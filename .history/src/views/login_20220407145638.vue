@@ -75,7 +75,7 @@ export default {
         let res = await this.$http.get(`/proline/station/getLoginCode/?positionId=${localStorage.positionId}`);
         console.log(res)
         if (res.data.code == 20000) {
-          if (staffId !== "" && staffName !== "" && staffNum !== "") {
+          if (staffName !== "" && staffNum !== "") {
           this.$router.push({ path: "/work" });
         } else {
           this.$router.push({ path: "/login2" });
