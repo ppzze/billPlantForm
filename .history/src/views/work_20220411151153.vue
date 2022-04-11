@@ -260,14 +260,20 @@ export default {
       let res  = await this.$http.get(
         `/proline/station/getFile?positionId=${positionId}`
       );
-      console.log('我是工序里面获取video的路径',res.data.code)
+      console.log('我是工序里面获取video的路径',res)
       console.log('我是视频URL',this.nextVideoIndex,res.data.data)
-      if(res.data.code == 20000){
-        this.videoData = res.data.data
+      this.videoData = res.data.data
+      console.log('我市地质',this.videoData)
+      for(var i= 0;i<res.data.data.length;i++){
+        if(this.nextVideoIndex[0] == this.videoData[i].procedureId){
+          this.videoUrl =this.videoData[i].fileUrl
+          if(this.playerOptions.sources[0].src !== this.videoUrl){
+            this.playerOptions.sources[0].src = this.videoUrl
+            console.log("我在更新URL地址")
+          }
+          console.log('我是取了一个url地址',this.videoData[i].fileUrl,this.videoUrl)
+        }
       }
-      
-      // console.log('我市地质',this.videoData[0].fileUrl)
-      
     },
     async fetchWork() {
       var positionId = localStorage.positionId
@@ -281,17 +287,7 @@ export default {
         this.item = res.data.data;
         this.nextOperateSet = this.item.nextOperateSet;
         this.procedureList = this.item.procedureList;
-        // await this.getVideo();
-        for(var videoi= 0;videoi<this.videoData.length;videoi++){
-          if(this.nextVideoIndex[0] == this.videoData[videoi].procedureId){
-            this.videoUrl =this.videoData[videoi].fileUrl
-            if(this.playerOptions.sources[0].src !== this.videoUrl){
-              this.playerOptions.sources[0].src = this.videoUrl
-              console.log("我在更新URL地址")
-            }
-            console.log('我是取了一个url地址',this.videoData[videoi].fileUrl,this.videoUrl)
-          }
-      }
+        await this.getVideo();
         if(this.item.state == 'READY'){
            this.gongzhanstate = '(待开始)'
         }else if(this.item.state == 'DOING'){
@@ -368,7 +364,7 @@ export default {
   async created() {
     // await this.fetchWork();
     await this.getGongXu();
-    await this.getVideo();
+    // await this.getVideo();
     // this.playVideo();
   },
   mounted() {

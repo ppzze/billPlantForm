@@ -154,7 +154,7 @@ console.log('我是第二次扫码枪',res)
         } else if (this.state == "WAIT_STAFF_CODE") {
           console.log("尚未获取到员工信息");
           this.$router.push({ path: "/login2" });
-          await this.saomaqiang2();
+          // await this.saomaqiang2();
         } else {
           await this.saomaqiang1();
           console.log("尚未获取到信息");

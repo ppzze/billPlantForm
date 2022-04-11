@@ -47,7 +47,7 @@ export default {
     liucheng(){
       this.liuchengtimer = setInterval(() =>{
         this.lunxun2();
-      },1000)
+      },5000)
     },
     clearliucheng(){
       clearInterval(this.liuchengtimer)

@@ -282,15 +282,15 @@ export default {
         this.nextOperateSet = this.item.nextOperateSet;
         this.procedureList = this.item.procedureList;
         // await this.getVideo();
-        for(var videoi= 0;videoi<this.videoData.length;videoi++){
-          if(this.nextVideoIndex[0] == this.videoData[videoi].procedureId){
-            this.videoUrl =this.videoData[videoi].fileUrl
-            if(this.playerOptions.sources[0].src !== this.videoUrl){
-              this.playerOptions.sources[0].src = this.videoUrl
-              console.log("我在更新URL地址")
-            }
-            console.log('我是取了一个url地址',this.videoData[videoi].fileUrl,this.videoUrl)
+        for(var i= 0;i<res.data.data.length;i++){
+        if(this.nextVideoIndex[0] == this.videoData[i].procedureId){
+          this.videoUrl =this.videoData[i].fileUrl
+          if(this.playerOptions.sources[0].src !== this.videoUrl){
+            this.playerOptions.sources[0].src = this.videoUrl
+            console.log("我在更新URL地址")
           }
+          console.log('我是取了一个url地址',this.videoData[i].fileUrl,this.videoUrl)
+        }
       }
         if(this.item.state == 'READY'){
            this.gongzhanstate = '(待开始)'
