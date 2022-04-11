@@ -246,15 +246,13 @@ export default {
       this.gongxuerror = this.GongXuError.join()
       console.log('我是错误个数',this.gongxuerror);
     },
-    // 我是更新列表接口的定时器
     order() {
         this.guzhangtimer = setInterval(() => {
           this.getGongXu();
         }, 9000);
         this.gongxuTimer = setInterval(() =>{
           this.fetchWork();
-        },2000);
-        
+        },3000);
     },
     async getVideo(){
       var positionId = localStorage.positionId
@@ -271,7 +269,6 @@ export default {
       // console.log('我市地质',this.videoData[0].fileUrl)
       
     },
-    // 下面是获取工序接口并渲染ul页面的部分
     async fetchWork() {
       var positionId = localStorage.positionId
       console.log(positionId)
@@ -284,9 +281,7 @@ export default {
         this.item = res.data.data;
         this.nextOperateSet = this.item.nextOperateSet;
         this.procedureList = this.item.procedureList;
-        // this.handleScroll();
         // await this.getVideo();
-        // 下面是根据工序改变左侧视频的URL
         for(var videoi= 0;videoi<this.videoData.length;videoi++){
           if(this.nextVideoIndex[0] == this.videoData[videoi].procedureId){
             this.videoUrl =this.videoData[videoi].fileUrl
@@ -305,10 +300,10 @@ export default {
         else{
           this.gongzhanstate = '(已完成)'
         }
-        // 这是获取下一个即将要做的有哪些工序里面的工作步骤
+        
         this.nextVideoIndex = [];
         this.nextOpId = [];
-        this.nextPcdId = [];//在上面ul和li中会进行判断
+        this.nextPcdId = [];
         for (var i = 0; i < this.nextOperateSet.length; i++) {
           var id = this.nextOperateSet[i].opId;
           var pcd = this.nextOperateSet[i].pcdId;
@@ -316,11 +311,29 @@ export default {
           this.nextPcdId.push(pcd);
           this.nextVideoIndex.push(this.nextOperateSet[i].pcdId)
         }
+
+        // console.log('我是id',this.nextOpId)
+        // this.$message({ message: res.data.message, type: "success" });
       } else {
         // this.$message({ message: "获取信息失败", type: "warning" });
       }
     },
-    
+    // async fetchVideo() {
+    //   var positionId = localStorage.positionId
+    //   console.log(positionId)
+    //   let res = await this.$http.get(
+    //     `proline/station/getProcess?positionId=${positionId}`
+    //   );
+    //   console.log("1111我是res", res);
+
+    //   if (res.data.code == 20000) {
+    //     this.item = res.data.data;
+
+    //     // this.$message({ message: res.data.message, type: "success" });
+    //   } else {
+    //     // this.$message({ message: "获取信息失败", type: "warning" });
+    //   }
+    // },
     changeWarning() {
       setInterval(() => {
         this.warning = false;
@@ -335,7 +348,6 @@ export default {
         this.zhanshi = true
       }, 8000);
     },
-    // 下面的函数是滚动跳转的实现
     handleScroll() {
      
       this.liebiaobeng = setInterval(() => {
@@ -348,7 +360,7 @@ export default {
           easing: "swing",
         }
       );
-       }, 1000);
+       }, 2000);
      
       
     },
@@ -363,7 +375,7 @@ export default {
     this.order();
     // this.fetchVideo();
     this.changeWarning();
-    // this.handleScroll();
+    this.handleScroll();
     this.staff = localStorage.staffName
     this.gongzhanName = localStorage.stationName
     console.log(this.staff)

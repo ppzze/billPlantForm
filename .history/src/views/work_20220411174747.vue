@@ -246,7 +246,6 @@ export default {
       this.gongxuerror = this.GongXuError.join()
       console.log('我是错误个数',this.gongxuerror);
     },
-    // 我是更新列表接口的定时器
     order() {
         this.guzhangtimer = setInterval(() => {
           this.getGongXu();
@@ -286,7 +285,6 @@ export default {
         this.procedureList = this.item.procedureList;
         // this.handleScroll();
         // await this.getVideo();
-        // 下面是根据工序改变左侧视频的URL
         for(var videoi= 0;videoi<this.videoData.length;videoi++){
           if(this.nextVideoIndex[0] == this.videoData[videoi].procedureId){
             this.videoUrl =this.videoData[videoi].fileUrl
@@ -305,10 +303,10 @@ export default {
         else{
           this.gongzhanstate = '(已完成)'
         }
-        // 这是获取下一个即将要做的有哪些工序里面的工作步骤
+        
         this.nextVideoIndex = [];
         this.nextOpId = [];
-        this.nextPcdId = [];//在上面ul和li中会进行判断
+        this.nextPcdId = [];
         for (var i = 0; i < this.nextOperateSet.length; i++) {
           var id = this.nextOperateSet[i].opId;
           var pcd = this.nextOperateSet[i].pcdId;
@@ -316,11 +314,29 @@ export default {
           this.nextPcdId.push(pcd);
           this.nextVideoIndex.push(this.nextOperateSet[i].pcdId)
         }
+
+        // console.log('我是id',this.nextOpId)
+        // this.$message({ message: res.data.message, type: "success" });
       } else {
         // this.$message({ message: "获取信息失败", type: "warning" });
       }
     },
-    
+    // async fetchVideo() {
+    //   var positionId = localStorage.positionId
+    //   console.log(positionId)
+    //   let res = await this.$http.get(
+    //     `proline/station/getProcess?positionId=${positionId}`
+    //   );
+    //   console.log("1111我是res", res);
+
+    //   if (res.data.code == 20000) {
+    //     this.item = res.data.data;
+
+    //     // this.$message({ message: res.data.message, type: "success" });
+    //   } else {
+    //     // this.$message({ message: "获取信息失败", type: "warning" });
+    //   }
+    // },
     changeWarning() {
       setInterval(() => {
         this.warning = false;

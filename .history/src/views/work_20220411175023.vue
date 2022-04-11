@@ -308,7 +308,7 @@ export default {
         // 这是获取下一个即将要做的有哪些工序里面的工作步骤
         this.nextVideoIndex = [];
         this.nextOpId = [];
-        this.nextPcdId = [];//在上面ul和li中会进行判断
+        this.nextPcdId = [];
         for (var i = 0; i < this.nextOperateSet.length; i++) {
           var id = this.nextOperateSet[i].opId;
           var pcd = this.nextOperateSet[i].pcdId;
