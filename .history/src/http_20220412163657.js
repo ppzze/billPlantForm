@@ -8,8 +8,8 @@ import router from './router'
 // axios封装地址
 console.log(process.env.NODE_ENV)
 const http = axios.create({
-    // baseURL: '/api', //地址在这里修改
-    baseUrl: 'https://www.chargestation.top'
+    baseURL: '/api', //地址在这里修改
+    // baseUrl: 'https://www.chargestation.top'
 })
 // 添加请求拦截器，设置token
 http.interceptors.request.use(function(config) {

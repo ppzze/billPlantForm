@@ -120,7 +120,7 @@ export default {
       state: 1,
       staff: "",
       warning: false, //视频上方故障显示
-      zhanshi: false, //障显示
+      zhanshi: true, //障显示
       xianshi: false,
       videoUrl: "",
       nextVideoIndex: [],

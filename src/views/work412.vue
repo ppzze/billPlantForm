@@ -1,109 +1,91 @@
 <template>
   <div class="work">
-    <!-- 头部 -->
     <div class="WorkTitle2">
       <div class="WorkTitleImg2">
         <img src="./img/logo.png" alt="" />
       </div>
       <div class="WorkTitleName2">
-        {{ this.gongzhanName }}
+        {{this.gongzhanName}}
       </div>
-      <div class="WorkTitleKuohao">{{ this.gongzhanstate }}</div>
+      <div class="WorkTitleKuohao">{{this.gongzhanstate}}</div>
       <div class="WorkTitleRight">
         <div class="WorkTitleRightOne">
           <img src="./img/user.png" alt="" />
-          <div class="WorkTitleRightOneWord">{{ this.staff }}</div>
+          <div class="WorkTitleRightOneWord">{{this.staff}}</div>
         </div>
-        <div class="WorkTitleRightTwo" @click="exit" style="cursor: pointer">
+        <div class="WorkTitleRightTwo" @click="exit" style="cursor:pointer">
           <img src="./img/exit.png" alt="" />
           <div class="WorkTitleRightTwoWord">退&nbsp;出</div>
         </div>
       </div>
     </div>
     <div class="body">
-      <div
-        class="zhang"
-        @click="showZhang"
-        v-if="zhanshi"
-      
-      >
-        障
-      </div>
-      <div class="showzhang" v-show="xianshi" >
+      <div class="zhang" @click="showZhang" v-show="zhanshi" id="menu" ref="Menu">障</div>
+      <div class="showzhang"  v-if="xianshi" id="model" ref="Model">
         <ul>
           <li :key="guzhang" v-for="guzhang in this.GongXuError">
-            <img
-              style="width: 22px; height: 22px; margin-right: 20px"
-              src="./img/redcircle.png"
-            />
-            {{ guzhang }}
+            <img style="width: 22px; height: 22px;margin-right:20px" src="./img/redcircle.png" />
+            {{ guzhang}}
           </li>
         </ul>
       </div>
-      <!-- 视频页面 -->
-      <div class="video" style="position: relative">
-        <div class="AllWarning" v-if="warning">
+      <div class="video" style="position:relative;">
+        <div class="AllWarning"  v-show="warning">
           <img src="./img/Slice 1.png" alt="" />
-          <span>{{ gongxuerror }}出现故障，请检查 </span>
+          <span >{{this.gongxuerror}}出现故障，请检查 </span>
         </div>
-        <video-player
-          class="video-player vjs-custom-skin"
-          ref="videoPlayer"
-          :playsinline="true"
-          :options="playerOptions"
-        >
+        <video-player class="video-player vjs-custom-skin" 
+                      ref="videoPlayer" 
+                      :playsinline="true" 
+                      :options="playerOptions">
         </video-player>
+
+        
       </div>
-      <div id='list' class="process">
+      <div class="process">
+
         <!-- 下面是循环生成li -->
-        <ul :key="item.pcdId" v-for="item in procedureList">
-          <li
-            class="processDiv"
-            :class="nextPcdId.indexOf(item.pcdId) == -1 ? 'undo' : 'next'"
-          >
+        <ul :key="item.pcdId" v-for="item in procedureList" >
+          <li class="processDiv" :class="nextPcdId.indexOf(item.pcdId) == -1 ? 'undo' : 'next'" >
             <!-- 这上面的div中有:class="item.pcdSt == true ? 'success' : 'undo'" -->
             <div class="processImg">
-              <img
-                style="width: 22px; height: 22px"
-                :src="
-                  item.pcdSt == false
-                    ? require('./icon/grey-circle.png')
-                    : require('./icon/right.png')
-                "
-              />
+                <img
+              style="width: 22px; height: 22px; "
+              :src="
+                item.pcdSt == false
+                  ? require('./icon/grey-circle.png')
+                  : require('./icon/right.png')
+              "
+            />
             </div>
-
-            <div
-              class="processSpan"
-              :class="item.pcdSt == false ? '' : 'donetext'"
-            >
+            
+            <div class="processSpan" :class="item.pcdSt == false ? '' : 'donetext'">
               {{ item.prdDesc }}
             </div>
+            
           </li>
           <li
             :key="video.opId"
             v-for="video in item.operateList"
             :class="nextOpId.indexOf(video.opId) == -1 ? 'undo' : 'next fixed'"
-            class="videoDiv"
+          class="videoDiv"
           >
-            <div class="videoImg">
-              <img
-                style="width: 22px; height: 22px"
-                :src="
-                  video.opRs == false
-                    ? require('./icon/grey-circle.png')
-                    : require('./icon/right.png')
-                "
-              />
-            </div>
-            <div
-              class="videoSpan"
-              :class="video.opRs == false ? '' : 'donetext'"
-            >
-              {{ video.opDesc }}
-            </div>
+          <div class="videoImg">
+            <img
+              style="width: 22px; height: 22px;"
+              :src="
+                video.opRs == false
+                  ? require('./icon/grey-circle.png')
+                  : require('./icon/right.png')
+              "
+            />
+          </div>
+           <div class="videoSpan"  :class="video.opRs == false ? '' : 'donetext'" >         
+            {{ video.opDesc }}
+           </div>
           </li>
         </ul>
+
         <!-- 循环生成li结束 -->
       </div>
     </div>
@@ -111,59 +93,57 @@
 </template>
 <script>
 // import {videoPlayer } from 'vue-video-player'
-import "video.js/dist/video-js.css";
-// import $ from "jquery";
+import 'video.js/dist/video-js.css'
+import $ from 'jquery'
 export default {
   data() {
     return {
       ok: true,
       state: 1,
-      staff: "",
-      warning: false, //视频上方故障显示
-      zhanshi: false, //障显示
+      staff:'',
+      warning: true,
+      zhanshi: true,
       xianshi: false,
-      videoUrl: "",
-      nextVideoIndex: [],
+      videoUrl :'',
+      nextVideoIndex:[],
       stationId: "",
       GongXuError: [],
-      videoData: [], //视频地址
-      gongxuerror: "",
+      videoData:[],
+      gongxuerror:'',
       nextOperateSet: [],
-      gongzhanstate: "",
-      gongzhanName: "",
-      liebiaobeng: "",
+      gongzhanstate:'',
+      gongzhanName:'',
+      liebiaobeng:'',
       nextOpId: [],
-      nextPcdId: [],
+      nextPcdId:[],
       procedureList: [],
       playerOptions: {
-        playbackRates: [0.7, 1.0, 1.5, 2.0],
-        autoplay: true,
-        muted: true,
-        loop: true,
-        preload: "auto",
-        language: "zh-CN",
-        aspectRatio: "16:10",
-
-        fluid: true,
-        // poster:'./img/redcircle.png',
-        sources: [
-          {
-            type: "video/mp4",
-            src: "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4",
-          },
-        ],
-        notSupportedMessage: "此视频暂无法播放，请稍后再试",
+        playbackRates: [0.7, 1.0, 1.5, 2.0], 
+        autoplay: true, 
+        muted: true, 
+        loop: true, 
+        preload: 'auto', 
+        language: 'zh-CN',
+        aspectRatio: '16:10',
+        
+        fluid: true, 
+        poster:'./img/redcircle.png',
+        sources: [{
+          type: 'video/mp4', 
+          src: ''
+        }],
+        notSupportedMessage: '此视频暂无法播放，请稍后再试', 
         controlBar: {
           timeDivider: true,
           durationDisplay: true,
           remainingTimeDisplay: false,
-          fullscreenToggle: true, // 全屏按钮
-        },
+          fullscreenToggle: true // 全屏按钮
+        }
       },
-
+     
       paper: [],
       label: [],
-
+      scroll:false,
       guZhang: [
         {
           key: "zhang1",
@@ -209,207 +189,199 @@ export default {
     };
   },
   methods: {
+    playVideo() {
+      console.log('11111111111111111111111',this.playerOptions.sources[0].src)
+      // this.$refs['videoPlayer'].videoSrc = this.videoUrl
+      this.playerOptions.sources[0].src = this.videoUrl
+      console.log('11111111111111111111111',this.playerOptions.sources[0].src)
+    },
     clear() {
       console.log("我要清除定时器");
       clearInterval(this.guzhangtimer);
       clearInterval(this.gongxuTimer);
-      clearInterval(this.liebiaobeng);
+      // clearInterval(this.liebiaobeng);
     },
-    // 退出登录
-    async exit() {
+    
+    async exit(){
       var positionId = localStorage.positionId;
       var staffId = localStorage.staffId;
       let resexit = await this.$http.post(`/proline/station/logOut`, {
         positionId: positionId,
-        staffId: staffId,
-      });
-      console.log("##", resexit);
-      if (resexit.data.code == 20000) {
+        staffId: staffId,});
+      console.log('##',resexit)
+      if(resexit.data.code == 20000){
         this.clear();
-        console.log(resexit);
-        localStorage.removeItem("staffId");
-        localStorage.removeItem("staffName");
-        localStorage.removeItem("staffNum");
+        console.log(resexit)
+        localStorage.removeItem('staffId')
+        localStorage.removeItem('staffName')
+        localStorage.removeItem('staffNum')
         // this.$router.push({path:'/login2'})
         this.$router.push({ path: "/login" });
       }
     },
 
-    // 获取故障工序
     async getGongXu() {
-      var positionId = localStorage.positionId;
-      console.log(positionId);
+      var positionId = localStorage.positionId
+      console.log(positionId)
       let resGongXu = await this.$http.get(
         `/proline/station/listErrorEquipment?positionId=${positionId}`
       );
-      // console.log("我是getGongXu里面的res", resGongXu);
-      // var GOngxuCode = resGongXu.data.code;
+      console.log("我是getGongXu里面的res", resGongXu);
+      var GOngxuCode = resGongXu.data.code;
       var GongXuData = resGongXu.data.data;
-      // console.log('我是错误！！！！！！！！！！！！！！！！！！！！！！',GongXuData)
+      console.log('我是错误！！！！！！！！！！！！！！！！！！！！！！',GongXuData)
       var GongXuDataLength = GongXuData.length;
       this.GongXuError = [];
-      // console.log(GOngxuCode, GongXuData, GongXuDataLength);
-      
-      // 获取不正常工序
+      console.log(GOngxuCode, GongXuData, GongXuDataLength);
       for (var i = 0; i < GongXuDataLength; i++) {
-        if (
-          GongXuData[i].errorState != "OK" ||
-          GongXuData[i].connectState == "UN_READY"
-        ) {
+        if ((GongXuData[i].errorState != "OK") ||(GongXuData[i].connectState=="UN_READY")) {
           console.log(GongXuData[i].equipmentName);
           this.GongXuError.push(GongXuData[i].equipmentName);
         }
       }
-      console.log('我是错误的设备列表',this.GongXuError)
-      // 没有故障
-      if (this.GongXuError.length != 0) {
-        this.zhanshi = true;
-        this.changeWarning();
-        console.log("hi 我执行了吗", this.zhanshi);
+      if(this.GongXuError.length == 0){
+        this.zhanshi = false
+        console.log('hi 我执行了吗',this.zhanshi)
       }
-      else{
-        this.zhanshi = false;
-        this.warning = false;
-        this.xianshi = false;
-      }
-      this.gongxuerror = this.GongXuError.join();
-      console.log("我是错误", this.gongxuerror);
+      this.gongxuerror = this.GongXuError.join()
+      console.log('我是错误个数',this.gongxuerror);
     },
-
     // 我是更新列表接口的定时器
     order() {
-      this.guzhangtimer = setInterval(() => {
-        this.getGongXu();
-      }, 9000);
-      this.gongxuTimer = setInterval(() => {
-        this.fetchWork();
-      }, 2000);
+        this.guzhangtimer = setInterval(() => {
+          this.getGongXu();
+        }, 9000);
+        this.gongxuTimer = setInterval(() =>{
+          this.fetchWork();
+        },2000);
+        
     },
-
-    // 获取视频地址
-    async getVideo() {
-      var positionId = localStorage.positionId;
-      console.log(positionId);
-      let res = await this.$http.get(
+    async getVideo(){
+      var positionId = localStorage.positionId
+      console.log(positionId)
+      let res  = await this.$http.get(
         `/proline/station/getFile?positionId=${positionId}`
       );
-      // console.log('我是工序里面获取video',res.data)
-      // console.log('我是视频URL',this.nextVideoIndex,res.data.data)
-      if (res.data.code == 20000) {
-        this.videoData = res.data.data;
-        console.log("video", this.videoData);
+      console.log('我是工序里面获取video的路径',res.data.code)
+      console.log('我是视频URL',this.nextVideoIndex,res.data.data)
+      if(res.data.code == 20000){
+        this.videoData = res.data.data
       }
+      
+      // console.log('我市地质',this.videoData[0].fileUrl)
+      
     },
-
     // 下面是获取工序接口并渲染ul页面的部分
     async fetchWork() {
-      var positionId = localStorage.positionId;
-      console.log(positionId);
+      var positionId = localStorage.positionId
+      console.log(positionId)
+      // console.log("我是工序中的状态码", this.GOngxuCode);
       let res = await this.$http.get(
         `/proline/station/getProcess?positionId=${positionId}`
       );
+      console.log("我是res", res);
       if (res.data.code == 20000) {
-        this.nextOperateSet=[]
-        this.procedureList=[]
         this.item = res.data.data;
+
+      // if (this.nextOperateSet == "" && this.procedureList == "") {
+      //     this.nextOperateSet = this.item.nextOperateSet;
+      //     this.procedureList = this.item.procedureList;
+      //   } else 
+         if (this.nextPcdId[0] !== this.item.nextOperateSet[0].pcdId) {
+      //     this.nextOperateSet = this.item.nextOperateSet;
+      //     this.procedureList = this.item.procedureList;
+          this.scroll=true;
+        }
+
         this.nextOperateSet = this.item.nextOperateSet;
         this.procedureList = this.item.procedureList;
-        // for(var a =0;a<this.procedureList.length;a++){
-        //   var eachoperatelist = this.procedureList[a].operateList;
-        //   for (var b = 0;b<eachoperatelist;b++){
-        //      console.log('1')
-        //   }
-        // }
         
-        console.log(this.nextOperateSet);
-        console.log('我是工序列表',this.procedureList);
+        // await this.getVideo();
         // 下面是根据工序改变左侧视频的URL
-        for (var videoi = 0; videoi < this.videoData.length; videoi++) {
-          if (this.nextVideoIndex[0] == this.videoData[videoi].procedureId) {
-            this.videoUrl = this.videoData[videoi].fileUrl;
-            if (this.playerOptions.sources[0].src !== this.videoUrl) {
-              this.playerOptions.sources[0].src = this.videoUrl;
+        for(var videoi= 0;videoi<this.videoData.length;videoi++){
+          if(this.nextVideoIndex[0] == this.videoData[videoi].procedureId){
+            this.videoUrl =this.videoData[videoi].fileUrl
+            if(this.playerOptions.sources[0].src !== this.videoUrl){
+              this.playerOptions.sources[0].src = this.videoUrl
               console.log("我在更新URL地址")
             }
             console.log('我是取了一个url地址',this.videoData[videoi].fileUrl,this.videoUrl)
           }
+      }
+        if(this.item.state == 'READY'){
+           this.gongzhanstate = '(待开始)'
+        }else if(this.item.state == 'DOING'){
+          this.gongzhanstate = '(工作中)'
         }
-        // 判断工站状态
-        if (this.item.state == "READY") {
-          this.gongzhanstate = "(待开始)";
-        } else if (this.item.state == "DOING") {
-          this.gongzhanstate = "(工作中)";
-        } else {
-          this.gongzhanstate = "(已完成)";
+        else{
+          this.gongzhanstate = '(已完成)'
         }
         // 这是获取下一个即将要做的有哪些工序里面的工作步骤
         this.nextVideoIndex = [];
         this.nextOpId = [];
-        this.nextPcdId = []; //在上面ul和li中会进行判断
+        this.nextPcdId = [];//在上面ul和li中会进行判断
         for (var i = 0; i < this.nextOperateSet.length; i++) {
           var id = this.nextOperateSet[i].opId;
           var pcd = this.nextOperateSet[i].pcdId;
           this.nextOpId.push(id);
           this.nextPcdId.push(pcd);
-          this.nextVideoIndex.push(this.nextOperateSet[i].pcdId);
+          this.nextVideoIndex.push(this.nextOperateSet[i].pcdId)
         }
-        setTimeout(this.handleScroll(), 500 )
       } else {
-        this.$message({ message: "获取信息失败", type: "warning" });
+        // this.$message({ message: "获取信息失败", type: "warning" });
       }
     },
-
-    // 视频上方故障显示控制
+    
     changeWarning() {
-      setTimeout(() => {
-        this.warning = true;
+      setInterval(() => {
+        this.warning = false;
       }, 8000);
     },
-
-    // 显示故障信息
+   
     showZhang() {
-      // console.log( this.xianshi,'0000000000000000000000000000000000000000000000000000000000000')
       this.zhanshi = false;
       this.xianshi = true;
-      // console.log( this.xianshi)
-      // setTimeout(() => {
-      //   this.xianshi = false;
-      //   this.zhanshi = true;
-      // }, 8000);
+      setInterval(() => {
+        this.xianshi = false;
+        this.zhanshi = true
+      }, 8000);
     },
-
     // 下面的函数是滚动跳转的实现
-    // handleScroll(distance) {
-    //   document.getElementById("list").scrollTop = distance;
-    // },
-     handleScroll() {
-      var fixed = document.getElementsByClassName("fixed");
-      // console.log("###########", fixed[0].offsetTop);
-      document.getElementById("list").scrollTop = fixed[0].offsetTop-66;
+    handleScroll() {
+      $(".process").animate(
+        {
+          scrollTop: $(".fixed").offset().top,
+        },
+        {
+          duration: 100,
+          easing: "swing",
+        }
+      );
     },
   },
   async created() {
+    // await this.fetchWork();
     await this.getGongXu();
     await this.getVideo();
+    // this.playVideo();
   },
   mounted() {
     this.order();
-    
-    this.staff = localStorage.staffName;
-    this.gongzhanName = localStorage.stationName;
-    console.log(this.staff);
-    if(this.xianshi == true){
-      document.addEventListener("click", (e) => {
-      if (e.target.className !== "zhang") {
-        this.xianshi = false;
-        this.zhanshi = true;
-      }
-    });
+    // this.fetchVideo();
+    this.changeWarning();
+    console.log(this.scroll)
+    if(this.scroll==true)
+    {this.handleScroll();}
+    this.staff = localStorage.staffName
+    this.gongzhanName = localStorage.stationName
+    console.log(this.staff)
+    // this.playVideo();
+    document.addEventListener('click', (e) => {
+    if (e.target.className !== 'zhang') {
+      this.xianshi = false
+      this.zhanshi = true
     }
-  },
-  // 页面销毁即注销定时器
-  destroyed() {
-    this.clear();
+  })
   },
 };
 </script>
@@ -518,7 +490,7 @@ export default {
 .work .WorkTitleRight .WorkTitleRightTwo .WorkTitleRightTwoWord {
   float: left;
   height: 80px;
-
+  
   /* margin-left: 50px; */
   top: 20px;
   padding: 30px 0 0 20px;
@@ -547,10 +519,9 @@ export default {
   color: white;
   border-radius: 8px;
   z-index: 999;
-  cursor: pointer;
 }
 .work .body .showzhang {
-  background-color: rgba(93, 93, 93, 0.95);
+  background-color:rgba(93,93,93,0.95);
   /* background: #5D5D5D;
   opacity:0.8; */
   border-radius: 12px;
@@ -565,7 +536,7 @@ export default {
   position: absolute;
   right: 0px;
   top: 0px;
-  z-index: 200;
+  z-index: 2;
 }
 /* 背景模糊 */
 /* .body:after{
@@ -632,10 +603,10 @@ export default {
 .work .body .video .AllWarning {
   width: 800px;
   /* height: 50px; */
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 999;
+  position:absolute;
+  top:0;
+  left:0;
+  z-index:999;
   color: #f44040;
   line-height: 50px;
   font-size: 20px;
@@ -693,7 +664,7 @@ export default {
   position: relative;
   /* height: 50px; */
   text-align: left;
-  padding-left: 0px !important;
+  padding-left: 0px!important;
   font-size: 22px;
   line-height: 45px;
   letter-spacing: 5px;
@@ -701,14 +672,14 @@ export default {
   font-weight: bold;
   /* margin-top:20px; */
 }
-.work .body .process .processImg {
+.work .body .process .processImg{
   /* display: inline-block; */
   position: absolute;
   height: 45px;
-  top: 3px;
+  top:3px
 }
 
-.work .body .process .processSpan {
+.work .body .process .processSpan{
   display: inline-block;
   width: 290px;
   margin-left: 35px;
@@ -740,31 +711,32 @@ export default {
   /* font-weight: bold; */
   /* margin-top:20px; */
 }
-.work .body .process .videoImg {
+.work .body .process .videoImg{
   /* display: inline-block; */
   position: absolute;
   height: 45px;
-  top: 3px;
+  top:3px
 }
 
-.work .body .process .videoSpan {
+.work .body .process .videoSpan{
   display: inline-block;
   width: 290px;
   margin-left: 35px;
 }
 .next {
-  color: #59c5d2 !important;
+  color: #59C5D2 !important;
 }
-.next img {
-  content: url("./icon/blue-circle.png");
+.next img{
+  content:url('./icon/blue-circle.png');
 }
-.fixed {
+.fixed{
+
 }
 .undo {
-  color: #a0a0a0;
+  color: #A0A0A0;
 }
 .donetext {
-  color: #a0a0a0 !important;
+  color: #A0A0A0 !important;
 }
 /* .video-js .vjs-icon-placeholder {
     width: 80%;

@@ -398,14 +398,12 @@ export default {
     this.staff = localStorage.staffName;
     this.gongzhanName = localStorage.stationName;
     console.log(this.staff);
-    if(this.xianshi == true){
-      document.addEventListener("click", (e) => {
+    document.addEventListener("click", (e) => {
       if (e.target.className !== "zhang") {
         this.xianshi = false;
         this.zhanshi = true;
       }
     });
-    }
   },
   // 页面销毁即注销定时器
   destroyed() {

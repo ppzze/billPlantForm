@@ -25,11 +25,12 @@
         class="zhang"
         @click="showZhang"
         v-if="zhanshi"
-      
+        id="menu"
+        ref="Menu"
       >
         障
       </div>
-      <div class="showzhang" v-show="xianshi" >
+      <div class="showzhang" v-if="xianshi" id="model" ref="Model">
         <ul>
           <li :key="guzhang" v-for="guzhang in this.GongXuError">
             <img
@@ -119,8 +120,8 @@ export default {
       ok: true,
       state: 1,
       staff: "",
-      warning: false, //视频上方故障显示
-      zhanshi: false, //障显示
+      warning: true, //视频上方故障显示
+      zhanshi: true, //障显示
       xianshi: false,
       videoUrl: "",
       nextVideoIndex: [],
@@ -262,15 +263,9 @@ export default {
       }
       console.log('我是错误的设备列表',this.GongXuError)
       // 没有故障
-      if (this.GongXuError.length != 0) {
-        this.zhanshi = true;
-        this.changeWarning();
-        console.log("hi 我执行了吗", this.zhanshi);
-      }
-      else{
+      if (this.GongXuError.length == 0) {
         this.zhanshi = false;
-        this.warning = false;
-        this.xianshi = false;
+        console.log("hi 我执行了吗", this.zhanshi);
       }
       this.gongxuerror = this.GongXuError.join();
       console.log("我是错误", this.gongxuerror);
@@ -314,24 +309,18 @@ export default {
         this.item = res.data.data;
         this.nextOperateSet = this.item.nextOperateSet;
         this.procedureList = this.item.procedureList;
-        // for(var a =0;a<this.procedureList.length;a++){
-        //   var eachoperatelist = this.procedureList[a].operateList;
-        //   for (var b = 0;b<eachoperatelist;b++){
-        //      console.log('1')
-        //   }
-        // }
-        
+        console.log(this.item);
         console.log(this.nextOperateSet);
-        console.log('我是工序列表',this.procedureList);
+        console.log(this.procedureList);
         // 下面是根据工序改变左侧视频的URL
         for (var videoi = 0; videoi < this.videoData.length; videoi++) {
           if (this.nextVideoIndex[0] == this.videoData[videoi].procedureId) {
             this.videoUrl = this.videoData[videoi].fileUrl;
             if (this.playerOptions.sources[0].src !== this.videoUrl) {
               this.playerOptions.sources[0].src = this.videoUrl;
-              console.log("我在更新URL地址")
+              // console.log("我在更新URL地址")
             }
-            console.log('我是取了一个url地址',this.videoData[videoi].fileUrl,this.videoUrl)
+            // console.log('我是取了一个url地址',this.videoData[videoi].fileUrl,this.videoUrl)
           }
         }
         // 判断工站状态
@@ -353,7 +342,7 @@ export default {
           this.nextPcdId.push(pcd);
           this.nextVideoIndex.push(this.nextOperateSet[i].pcdId);
         }
-        setTimeout(this.handleScroll(), 500 )
+        setTimeout(this.handleScroll(100), 500 )
       } else {
         this.$message({ message: "获取信息失败", type: "warning" });
       }
@@ -361,31 +350,25 @@ export default {
 
     // 视频上方故障显示控制
     changeWarning() {
-      setTimeout(() => {
-        this.warning = true;
+      setInterval(() => {
+        this.warning = false;
       }, 8000);
     },
 
     // 显示故障信息
     showZhang() {
-      // console.log( this.xianshi,'0000000000000000000000000000000000000000000000000000000000000')
+      console.log( this.xianshi,'0000000000000000000000000000000000000000000000000000000000000')
       this.zhanshi = false;
       this.xianshi = true;
-      // console.log( this.xianshi)
-      // setTimeout(() => {
-      //   this.xianshi = false;
-      //   this.zhanshi = true;
-      // }, 8000);
+      setInterval(() => {
+        this.xianshi = false;
+        this.zhanshi = true;
+      }, 8000);
     },
 
     // 下面的函数是滚动跳转的实现
-    // handleScroll(distance) {
-    //   document.getElementById("list").scrollTop = distance;
-    // },
-     handleScroll() {
-      var fixed = document.getElementsByClassName("fixed");
-      // console.log("###########", fixed[0].offsetTop);
-      document.getElementById("list").scrollTop = fixed[0].offsetTop-66;
+    handleScroll(distance) {
+      document.getElementById("list").scrollTop = distance;
     },
   },
   async created() {
@@ -394,18 +377,16 @@ export default {
   },
   mounted() {
     this.order();
-    
+    this.changeWarning();
     this.staff = localStorage.staffName;
     this.gongzhanName = localStorage.stationName;
     console.log(this.staff);
-    if(this.xianshi == true){
-      document.addEventListener("click", (e) => {
+    document.addEventListener("click", (e) => {
       if (e.target.className !== "zhang") {
         this.xianshi = false;
         this.zhanshi = true;
       }
     });
-    }
   },
   // 页面销毁即注销定时器
   destroyed() {
@@ -547,7 +528,6 @@ export default {
   color: white;
   border-radius: 8px;
   z-index: 999;
-  cursor: pointer;
 }
 .work .body .showzhang {
   background-color: rgba(93, 93, 93, 0.95);

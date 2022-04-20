@@ -25,11 +25,12 @@
         class="zhang"
         @click="showZhang"
         v-if="zhanshi"
-      
+        id="menu"
+        ref="Menu"
       >
         障
       </div>
-      <div class="showzhang" v-show="xianshi" >
+      <div class="showzhang" v-show="xianshi" id="model" ref="Model">
         <ul>
           <li :key="guzhang" v-for="guzhang in this.GongXuError">
             <img
@@ -269,8 +270,6 @@ export default {
       }
       else{
         this.zhanshi = false;
-        this.warning = false;
-        this.xianshi = false;
       }
       this.gongxuerror = this.GongXuError.join();
       console.log("我是错误", this.gongxuerror);
@@ -353,7 +352,7 @@ export default {
           this.nextPcdId.push(pcd);
           this.nextVideoIndex.push(this.nextOperateSet[i].pcdId);
         }
-        setTimeout(this.handleScroll(), 500 )
+        setTimeout(this.handleScroll(100), 500 )
       } else {
         this.$message({ message: "获取信息失败", type: "warning" });
       }
@@ -385,7 +384,7 @@ export default {
      handleScroll() {
       var fixed = document.getElementsByClassName("fixed");
       // console.log("###########", fixed[0].offsetTop);
-      document.getElementById("list").scrollTop = fixed[0].offsetTop-66;
+      document.getElementById("list").scrollTop = fixed[0].offsetTop-80;
     },
   },
   async created() {
@@ -398,14 +397,12 @@ export default {
     this.staff = localStorage.staffName;
     this.gongzhanName = localStorage.stationName;
     console.log(this.staff);
-    if(this.xianshi == true){
-      document.addEventListener("click", (e) => {
+    document.addEventListener("click", (e) => {
       if (e.target.className !== "zhang") {
         this.xianshi = false;
         this.zhanshi = true;
       }
     });
-    }
   },
   // 页面销毁即注销定时器
   destroyed() {

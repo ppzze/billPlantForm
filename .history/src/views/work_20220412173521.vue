@@ -25,11 +25,12 @@
         class="zhang"
         @click="showZhang"
         v-if="zhanshi"
-      
+        id="menu"
+        ref="Menu"
       >
         障
       </div>
-      <div class="showzhang" v-show="xianshi" >
+      <div class="showzhang" v-show="xianshi" id="model" ref="Model">
         <ul>
           <li :key="guzhang" v-for="guzhang in this.GongXuError">
             <img
@@ -270,7 +271,6 @@ export default {
       else{
         this.zhanshi = false;
         this.warning = false;
-        this.xianshi = false;
       }
       this.gongxuerror = this.GongXuError.join();
       console.log("我是错误", this.gongxuerror);
@@ -398,14 +398,12 @@ export default {
     this.staff = localStorage.staffName;
     this.gongzhanName = localStorage.stationName;
     console.log(this.staff);
-    if(this.xianshi == true){
-      document.addEventListener("click", (e) => {
+    document.addEventListener("click", (e) => {
       if (e.target.className !== "zhang") {
         this.xianshi = false;
         this.zhanshi = true;
       }
     });
-    }
   },
   // 页面销毁即注销定时器
   destroyed() {
