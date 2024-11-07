@@ -1,7 +1,7 @@
-# pipelinePlatform
+# billPlatform
 
 #### Description
-充电桩流水线平台
+单据识别系统
 
 #### Software Architecture
 Software architecture description

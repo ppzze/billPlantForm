@@ -5,17 +5,9 @@ import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import http from './http'
-import VideoPlayer from 'vue-video-player'
 
-// 引入方式一
-import 'vue-video-player/src/custom-theme.css'
-import 'video.js/dist/video-js.css'
-
-// // 引入方式二
-// require('video.js/dist/video-js.css')
-// require('vue-video-player/src/custom-theme.css')
-
-Vue.use(VideoPlayer)
+import JsonViewer from 'vue-json-viewer'
+Vue.use(JsonViewer) 
 
 Vue.prototype.$http = http
 Vue.config.productionTip = false

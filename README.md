@@ -1,7 +1,7 @@
-# pipelinePlatform
+# billPlatform
 
 #### 介绍
-充电桩流水线平台
+单据识别系统
 
 #### 软件架构
 软件架构说明

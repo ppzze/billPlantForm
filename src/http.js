@@ -2,34 +2,35 @@
 //引用封装axios,设置请求、相应拦截器
 import axios from 'axios'
 // import Vue from 'vue'
-import router from './router'
+// import router from './router'
 
 
 // axios封装地址
 console.log(process.env.NODE_ENV)
 const http = axios.create({
     baseURL: '/api', //地址在这里修改
-    // baseUrl: 'https://www.chargestation.top'
+    // baseUrl: 'https://aip.baidubce.com/api'
 })
 // 添加请求拦截器，设置token
-http.interceptors.request.use(function(config) {
+http.interceptors.request.use(function (config) {
     // 如果要用token,登录时存到localStorage里，在这里统一获取
+    config.headers["Content-Type"] = "application/x-www-form-urlencoded"
+    // config.headers["Content-Type"] = "multipart/form-data"
+   
+    console.log(' config.headers', config.headers)
     let token = localStorage.token
     if (token) {
         config.headers.Authorization = token
     }
     return config;
-}, function(error) {
+}, function (error) {
     return Promise.reject(error);
 });
 // 添加相应拦截器，根据实际需要进行更改
 http.interceptors.response.use(res => {
-    
-    if(res.data.code == 20004){
-        localStorage.removeItem('staffId')
-        localStorage.removeItem('staffName')
-        localStorage.removeItem('staffNum')
-        router.push('/login')
+
+    if (res.data.code == 20004) {
+        console.log(res.data.code)
     }
     return res
 }, err => {

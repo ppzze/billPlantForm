@@ -8,8 +8,17 @@
       <div class="WorkTitleName2">
         {{ this.gongzhanName }}
       </div>
-      <div class="WorkTitleKuohao">{{ this.gongzhanstate }}</div>
-      
+      <div class="WorkTitleKuohao">
+        <div>
+          <span>订单编号:{{ this.orderNum }}</span
+          ><span>第几个桩:{{ this.finishCount }}</span>
+        </div>
+        <div>
+          <span>桩版本:{{ this.programVersion }}</span
+          ><span>模块程序版本:{{ this.communicationVersion }}</span>
+        </div>
+      </div>
+
       <div class="WorkTitleRight">
         <div class="workdianjian" @click="dianjianLogin">点检</div>
         <div class="WorkTitleRightOne">
@@ -23,15 +32,8 @@
       </div>
     </div>
     <div class="body">
-      <div
-        class="zhang"
-        @click="showZhang"
-        v-if="zhanshi"
-      
-      >
-        障
-      </div>
-      <div class="showzhang" v-show="xianshi" >
+      <div class="zhang" @click="showZhang" v-if="zhanshi">障</div>
+      <div class="showzhang" v-show="xianshi">
         <ul>
           <li :key="guzhang" v-for="guzhang in this.GongXuError">
             <img
@@ -43,11 +45,17 @@
         </ul>
       </div>
       <!-- 视频页面 -->
-      <div class="video" style="position: relative">
+
+      <div
+        v-if="this.viewType == 'VIDEO'"
+        class="video"
+        style="position: relative"
+      >
         <div class="AllWarning" v-if="warning">
           <img src="./img/Slice 1.png" alt="" />
-          <span>{{ gongxuerror }}出现故障，请检查 </span>
+          <span class="warningLeft">{{ gongxuerror }}出现故障 </span>
         </div>
+
         <video-player
           class="video-player vjs-custom-skin"
           ref="videoPlayer"
@@ -56,57 +64,78 @@
         >
         </video-player>
       </div>
-      <div id='list' class="process">
-        <!-- 下面是循环生成li -->
-        <ul :key="item.pcdId" v-for="item in procedureList">
-          <li
-            class="processDiv"
-            :class="nextPcdId.indexOf(item.pcdId) == -1 ? 'undo' : 'next'"
-          >
-            <!-- 这上面的div中有:class="item.pcdSt == true ? 'success' : 'undo'" -->
-            <div class="processImg">
-              <img
-                style="width: 22px; height: 22px"
-                :src="
-                  item.pcdSt == false
-                    ? require('./icon/grey-circle.png')
-                    : require('./icon/right.png')
-                "
-              />
-            </div>
+      <!-- v-if="this.viewType == 'PNG_GIF'" -->
+      <div
+        class="showImg"
+        v-if="this.viewType == 'PNG_GIF'"
+        style="position: relative"
+      >
+        <img
+          :src="item"
+          :key="item"
+          v-for="(item, index) in imgSrc"
+          :style="{ zIndex: index }"
+          alt=""
+        />
+      </div>
 
-            <div
-              class="processSpan"
-              :class="item.pcdSt == false ? '' : 'donetext'"
+      <div class="workADD">
+        <div class="workadd">{{ this.ready }}</div>
+
+        <div id="list" class="process">
+          <!-- 下面是循环生成li -->
+          <ul :key="item.pcdId" v-for="item in procedureList">
+            <li
+              class="processDiv"
+              :class="nextPcdId.indexOf(item.pcdId) == -1 ? 'undo' : 'next'"
             >
-              {{ item.prdDesc }}
-            </div>
-          </li>
-          <li
-            :key="video.opId"
-            v-for="video in item.operateList"
-            :class="nextOpId.indexOf(video.opId) == -1 ? 'undo' : 'next fixed'"
-            class="videoDiv"
-          >
-            <div class="videoImg">
-              <img
-                style="width: 22px; height: 22px"
-                :src="
-                  video.opRs == false
-                    ? require('./icon/grey-circle.png')
-                    : require('./icon/right.png')
-                "
-              />
-            </div>
-            <div
-              class="videoSpan"
-              :class="video.opRs == false ? '' : 'donetext'"
+              <!-- 这上面的div中有:class="item.pcdSt == true ? 'success' : 'undo'" -->
+              <div class="processImg">
+                <img
+                  style="width: 22px; height: 22px"
+                  :src="
+                    item.pcdSt == false
+                      ? require('./icon/grey-circle.png')
+                      : require('./icon/right.png')
+                  "
+                />
+              </div>
+
+              <div
+                class="processSpan"
+                :class="item.pcdSt == false ? '' : 'donetext'"
+              >
+                {{ item.prdDesc }}
+              </div>
+            </li>
+            <li
+              :key="video.opId"
+              v-for="video in item.operateList"
+              :class="
+                nextOpId.indexOf(video.opId) == -1 ? 'undo' : 'next fixed'
+              "
+              class="videoDiv"
             >
-              {{ video.opDesc }}
-            </div>
-          </li>
-        </ul>
-        <!-- 循环生成li结束 -->
+              <div class="videoImg">
+                <img
+                  style="width: 22px; height: 22px"
+                  :src="
+                    video.opRs == false
+                      ? require('./icon/grey-circle.png')
+                      : require('./icon/right.png')
+                  "
+                />
+              </div>
+              <div
+                class="videoSpan"
+                :class="video.opRs == false ? '' : 'donetext'"
+              >
+                {{ video.opDesc }}
+              </div>
+            </li>
+          </ul>
+          <!-- 循环生成li结束 -->
+        </div>
       </div>
     </div>
   </div>
@@ -124,19 +153,28 @@ export default {
       warning: false, //视频上方故障显示
       zhanshi: false, //障显示
       xianshi: false,
+      viewType: "",
       videoUrl: "",
       nextVideoIndex: [],
       stationId: "",
       GongXuError: [],
       videoData: [], //视频地址
+      imgSrc: [],
       gongxuerror: "",
       nextOperateSet: [],
       gongzhanstate: "",
       gongzhanName: "",
       liebiaobeng: "",
+      errormsg: "",
+      erroemsgshow: false,
       nextOpId: [],
       nextPcdId: [],
       procedureList: [],
+      ready: "",
+      communicationVersion: "",
+      finishCount: "",
+      orderNum: "",
+      programVersion: "",
       playerOptions: {
         playbackRates: [0.7, 1.0, 1.5, 2.0],
         autoplay: true,
@@ -211,26 +249,56 @@ export default {
     };
   },
   methods: {
-    dianjianLogin(){
+    //  mouseOver: function(){
+    //         this.active = 'background-color: #cccccc';
+    //     },
+    //  mouseLeave: function () {
+    //         this.active = 'background-color: green';
+    //     },
+
+    // mouseOver(){
+    //   this.active = 'background-color: #cccccc';
+    // },
+    // mouseLeave() {
+    //   this.active = 'background-color: green';
+    // },
+    dianjianLogin() {
       // 执行点检员的登录
       // 算了，先跳到那个页面吧
+      sessionStorage.admin = "3";
       this.$router.push({ path: "/checklogin" });
-      this.checkLogin();
+      // this.checkLogin();
     },
-    async checkLogin() {
+    async geterrorMSg() {
       var positionId = localStorage.positionId;
-      console.log('我是点检员登录',positionId);
-      let res = await this.$http.get(
-        `/proline/station/getCheckLoginState?positionId=${positionId}`
+      let resmsg = await this.$http.get(
+        `/proline/station/getErrorMsg?positionId=${positionId}`
       );
-      console.log('我是点检员登录',res)
-      // console.log('我是工序里面获取video',res.data)
-      // console.log('我是视频URL',this.nextVideoIndex,res.data.data)
-      if (res.data.code == 20000) {
-        this.videoData = res.data.data;
-        console.log("video", this.videoData);
+      if (resmsg.data.code == 20000) {
+        this.gongxuerror = resmsg.data.data;
+        console.log("0624", resmsg);
+        if (resmsg.data.data.length != 0) {
+          this.warning = true;
+          this.changeWarning();
+        } else {
+          this.warning = false;
+        }
       }
     },
+    // async checkLogin() {
+    //   var positionId = localStorage.positionId;
+    //   console.log("我是点检员登录", positionId);
+    //   let res = await this.$http.get(
+    //     `/proline/station/getCheckLoginState?positionId=${positionId}`
+    //   );
+    //   console.log("我是点检员登录", res);
+    //   // console.log('我是工序里面获取video',res.data)
+    //   // console.log('我是视频URL',this.nextVideoIndex,res.data.data)
+    //   if (res.data.code == 20000) {
+    //     this.videoData = res.data.data;
+    //     console.log("video", this.videoData);
+    //   }
+    // },
 
     clear() {
       console.log("我要清除定时器");
@@ -250,9 +318,12 @@ export default {
       if (resexit.data.code == 20000) {
         this.clear();
         console.log(resexit);
+        localStorage.removeItem("viewType");
         localStorage.removeItem("staffId");
+        localStorage.removeItem("positionId");
         localStorage.removeItem("staffName");
         localStorage.removeItem("staffNum");
+
         // this.$router.push({path:'/login2'})
         this.$router.push({ path: "/login" });
       }
@@ -272,7 +343,7 @@ export default {
       var GongXuDataLength = GongXuData.length;
       this.GongXuError = [];
       // console.log(GOngxuCode, GongXuData, GongXuDataLength);
-      
+
       // 获取不正常工序
       for (var i = 0; i < GongXuDataLength; i++) {
         if (
@@ -283,26 +354,26 @@ export default {
           this.GongXuError.push(GongXuData[i].equipmentName);
         }
       }
-      console.log('我是错误的设备列表',this.GongXuError)
+      console.log("我是错误的设备列表", this.GongXuError);
       // 没有故障
       if (this.GongXuError.length != 0) {
         this.zhanshi = true;
-        this.changeWarning();
+
         console.log("hi 我执行了吗", this.zhanshi);
-      }
-      else{
+      } else {
         this.zhanshi = false;
         this.warning = false;
         this.xianshi = false;
       }
-      this.gongxuerror = this.GongXuError.join();
-      console.log("我是错误", this.gongxuerror);
+      // this.gongxuerror = this.GongXuError.join();
+      // console.log("我是错误", this.gongxuerror);
     },
 
     // 我是更新列表接口的定时器
     order() {
       this.guzhangtimer = setInterval(() => {
         this.getGongXu();
+        this.geterrorMSg();
       }, 9000);
       this.gongxuTimer = setInterval(() => {
         this.fetchWork();
@@ -332,29 +403,41 @@ export default {
         `/proline/station/getProcess?positionId=${positionId}`
       );
       if (res.data.code == 20000) {
-        this.nextOperateSet=[]
-        this.procedureList=[]
+        this.nextOperateSet = [];
+        this.procedureList = [];
         this.item = res.data.data;
+        if (this.imgSrc == this.item.resource) {
+          this.imgSrc = this.item.resource;
+        }
         this.nextOperateSet = this.item.nextOperateSet;
         this.procedureList = this.item.procedureList;
+        this.communicationVersion = this.item.communicationVersion;
+        this.finishCount = this.item.finishCount + 1;
+        this.orderNum = this.item.orderNum;
+        this.programVersion = this.item.programVersion;
+        this.ready = this.item.ready == true ? "就绪" : "未就绪";
         // for(var a =0;a<this.procedureList.length;a++){
         //   var eachoperatelist = this.procedureList[a].operateList;
         //   for (var b = 0;b<eachoperatelist;b++){
         //      console.log('1')
         //   }
         // }
-        
-        console.log(this.nextOperateSet);
-        console.log('我是工序列表',this.procedureList);
+
+        console.log("20220623", this.item);
+        console.log("我是工序列表", this.procedureList);
         // 下面是根据工序改变左侧视频的URL
         for (var videoi = 0; videoi < this.videoData.length; videoi++) {
           if (this.nextVideoIndex[0] == this.videoData[videoi].procedureId) {
             this.videoUrl = this.videoData[videoi].fileUrl;
             if (this.playerOptions.sources[0].src !== this.videoUrl) {
               this.playerOptions.sources[0].src = this.videoUrl;
-              console.log("我在更新URL地址")
+              console.log("我在更新URL地址");
             }
-            console.log('我是取了一个url地址',this.videoData[videoi].fileUrl,this.videoUrl)
+            console.log(
+              "我是取了一个url地址",
+              this.videoData[videoi].fileUrl,
+              this.videoUrl
+            );
           }
         }
         // 判断工站状态
@@ -376,7 +459,7 @@ export default {
           this.nextPcdId.push(pcd);
           this.nextVideoIndex.push(this.nextOperateSet[i].pcdId);
         }
-        setTimeout(this.handleScroll(), 500 )
+        setTimeout(this.handleScroll(), 500);
       } else {
         this.$message({ message: "获取信息失败", type: "warning" });
       }
@@ -385,9 +468,9 @@ export default {
     // 视频上方故障显示控制
     changeWarning() {
       setTimeout(() => {
-        this.warning = true;   
+        this.warning = false;
       }, 8000);
-      this.warning = false;
+      this.warning = true;
     },
 
     // 显示故障信息
@@ -406,24 +489,45 @@ export default {
     // handleScroll(distance) {
     //   document.getElementById("list").scrollTop = distance;
     // },
-     handleScroll() {
+    handleScroll() {
       var fixed = document.getElementsByClassName("fixed");
       // console.log("###########", fixed[0].offsetTop);
-      document.getElementById("list").scrollTop = fixed[0].offsetTop-66;
+      document.getElementById("list").scrollTop = fixed[0].offsetTop - 166;
+    },
+    async preload() {
+      var positionId = localStorage.positionId;
+      console.log(positionId);
+      let res = await this.$http.get(
+        `/proline/station/getViewResource?positionId=${positionId}`
+      );
+      if (res.data.code == 20000) {
+        let imgSrc = res.data.data;
+        console.log("video", imgSrc);
+        for (let img of imgSrc) {
+          let image = new Image();
+          image.src = img;
+          image.onload = () => {};
+        }
+      }
     },
   },
   async created() {
     await this.getGongXu();
     await this.getVideo();
+    await this.geterrorMSg();
   },
+  async beforeCreate() {
+    await this.preload();
+  },
+
   mounted() {
     this.order();
-    
+    this.viewType = localStorage.viewType;
     this.staff = localStorage.staffName;
     this.gongzhanName = localStorage.stationName;
     console.log(this.staff);
     document.addEventListener("click", (e) => {
-      if(this.xianshi == true){
+      if (this.xianshi == true) {
         if (e.target.className !== "zhang") {
           this.xianshi = false;
           this.zhanshi = true;
@@ -457,15 +561,17 @@ export default {
   border-bottom: 2px solid #767676;
 }
 .work .WorkTitle2 .WorkTitleImg2 {
-  width: 300px;
+  width: 220px;
+  /* 0622原来宽度是300 */
   height: 50px;
   float: left;
   margin-bottom: 10px;
   margin-top: 20px;
   /* position: absolute; */
   top: 20px;
+  /* background-color: green; */
   /* bottom: 10px; */
-  padding: 0 50px;
+  padding: 0 20px;
   border-right: 2px solid #767676;
 }
 .work .WorkTitle2 .WorkTitleImg2 img {
@@ -473,60 +579,73 @@ export default {
   height: 100%;
 }
 .work .WorkTitle2 .WorkTitleName2 {
-  letter-spacing: 5px;
+  letter-spacing: 3px;
   float: left;
-  width: 400px;
+  width: 380px;
+  /* 0622 400px */
   height: 80px;
-  margin-left: 50px;
+  margin-left: 10px;
   top: 20px;
   padding: 30px 0 0 0;
   color: white;
-  font-size: 23px;
+  font-size: 20px;
   border-bottom: 3px solid;
   /* background-color: red; */
   border-image: linear-gradient(to right, #3356bb, #6caacc) 1;
 }
 .work .WorkTitle2 .WorkTitleKuohao {
-  letter-spacing: 10px;
+  /* letter-spacing: 10px; */
   float: left;
   height: 80px;
-  margin-left: 50px;
+  margin-left: 20px;
   top: 20px;
-  padding: 30px 0 0 0;
+  /* padding: 30px 0 0 0; */
   color: white;
-  font-size: 23px;
+  font-size: 15px;
+  width: 400px;
   /* background-color: red; */
 }
-.work .workdianjian{
-  width: 100px;
+.work .WorkTitle2 .WorkTitleKuohao div {
+  height: 40px;
+}
+.work .WorkTitle2 .WorkTitleKuohao span {
+  display: inline-block;
+  width: 200px;
+  line-height: 40px;
+  text-align: left;
+  float: left;
+}
+.work .workdianjian {
+  width: 60px;
   height: 80px;
   float: left;
   color: white;
   /* background-color: blue; */
   float: left;
   height: 80px;
-  letter-spacing: 10px;
+  letter-spacing: 5px;
   /* margin-left: 50px; */
   top: 20px;
-  padding: 30px 0 0 20px;
+  padding: 30px 0 0 0;
   color: white;
-  font-size: 23px;
+  font-size: 20px;
+  cursor: pointer;
 }
 .work .WorkTitleRight {
-  width: 480px;
+  width: 330px;
   height: 80px;
   float: right;
   color: white;
   /* top: 20px; */
   /* padding: 30px 0 0 0; */
-  font-size: 23px;
+  font-size: 20px;
   /* margin-right: 50px; */
-  /* background-color: white;  ; */
+  /* background-color: blue;  ; */
 }
 .work .WorkTitleRight .WorkTitleRightOne {
   float: left;
   height: 80px;
-  width: 210px;
+  width: 150px;
   /* background-color: red; */
 }
 .work .WorkTitleRight .WorkTitleRightOne img {
@@ -539,18 +658,18 @@ export default {
 .work .WorkTitleRight .WorkTitleRightOne .WorkTitleRightOneWord {
   float: left;
   height: 80px;
-  letter-spacing: 10px;
+  letter-spacing: 5px;
   /* margin-left: 50px; */
   top: 20px;
   padding: 30px 0 0 20px;
   color: white;
-  font-size: 23px;
+  font-size: 20px;
   /* background-color: red; */
 }
 .work .WorkTitleRight .WorkTitleRightTwo {
   float: left;
   height: 80px;
-  width: 170px;
+  width: 120px;
   /* margin-left: 50px;
   top: 20px;
   padding: 30px 0 0 0;
@@ -568,12 +687,11 @@ export default {
 .work .WorkTitleRight .WorkTitleRightTwo .WorkTitleRightTwoWord {
   float: left;
   height: 80px;
-
   /* margin-left: 50px; */
   top: 20px;
   padding: 30px 0 0 20px;
   color: white;
-  font-size: 23px;
+  font-size: 20px;
   /* background-color: red; */
 }
 .work .body {
@@ -679,20 +797,65 @@ export default {
   /* background: pink; */
   float: left;
 }
+
+.showImg {
+  width: calc(100% - 364px);
+  height: calc(96vh - 80px);
+  /* background: pink; */
+  float: left;
+  position: relative;
+  background-color: #fff;
+}
+.showImg img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
 .work .body .video .AllWarning {
-  width: 800px;
-  /* height: 50px; */
+  width: 600px;
+  /* height: 100px; */
   position: absolute;
   top: 0;
-  left: 0;
+  left: 200px;
   z-index: 999;
   color: #f44040;
   line-height: 50px;
   font-size: 20px;
-  letter-spacing: 10px;
+  letter-spacing: 5px;
+  background-color: rgba(255, 255, 255, 0.5);
+  /* opacity: 0.5; */
   /* position: fixed; */
   /* background-color: #fff; */
+  overflow: hidden;
+  /* text-overflow: ellipsis; */
+  /* white-space:nowrap; */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
+.AllWarning:hover {
+  cursor: pointer;
+  text-overflow: inherit;
+  display: block !important;
+  overflow: visible !important;
+}
+.work .body .video .AllWarning2 {
+  width: 200px;
+  /* height: 50px; */
+  position: absolute;
+  top: 0;
+  left: 700px;
+  z-index: 999;
+  color: #f44040;
+  line-height: 50px;
+  font-size: 20px;
+  letter-spacing: 5px;
+  /* position: fixed; */
+  background-color: #fff;
+}
+
 .work .body .video .AllWarning img {
   display: inline-block;
   width: 20px;
@@ -700,7 +863,7 @@ export default {
   background: none;
   margin-right: 10px;
 }
-.work .body .process {
+.work .body .workADD {
   float: left;
   color: white;
   /* background:#1E1E24; */
@@ -710,6 +873,26 @@ export default {
   height: calc(96vh - 80px);
   padding-left: 18px;
   padding-top: 18px;
+  /* padding-right: 59px; */
+  /* overflow: auto; */
+  z-index: 9;
+}
+.work .body .workADD .workadd {
+  width: 150px;
+  height: 40px;
+  font-size: 23px;
+  line-height: 40px;
+  /* background-color: blue; */
+}
+.work .body .process {
+  float: left;
+  color: white;
+  /* background:#1E1E24; */
+  background: #1e1e24;
+  border-radius: 0px 12px 12px 0px;
+  width: 324px;
+  height: calc(96vh - 120px);
+
   /* padding-right: 59px; */
   overflow: auto;
   z-index: 9;
@@ -760,7 +943,7 @@ export default {
 
 .work .body .process .processSpan {
   display: inline-block;
-  width: 290px;
+  width: 240px;
   margin-left: 35px;
 }
 .work .body .process ul li {
@@ -799,7 +982,7 @@ export default {
 
 .work .body .process .videoSpan {
   display: inline-block;
-  width: 290px;
+  width: 230px;
   margin-left: 35px;
 }
 .next {
@@ -816,6 +999,11 @@ export default {
 .donetext {
   color: #a0a0a0 !important;
 }
+/* .warningLeft{
+    display: inline-block;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+} */
 /* .video-js .vjs-icon-placeholder {
     width: 80%;
     height: 80%;

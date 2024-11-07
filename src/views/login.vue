@@ -18,7 +18,7 @@
             >以&nbsp;进&nbsp;行&nbsp;工&nbsp;站&nbsp;登&nbsp;录</span
           >
         </div>
-        <div class="qrcode" ref="qrCodeUrl" ></div>
+        <div class="qrcode" ref="qrCodeUrl"></div>
         <div class="right">
           <div class="throl"></div>
           <div class="gun">
@@ -40,247 +40,56 @@ export default {
   data() {
     return {
       item: "",
-      qrcode:""
+      qrcode: "",
     };
   },
   methods: {
-    liucheng(){
-      this.liuchengtimer = setInterval(() =>{
-        this.lunxun2();
-      },1000)
+    async liucheng() {
+      this.liuchengtimer = setInterval(() => {
+        this.getLoginState();
+      }, 1000);
     },
-    clearliucheng(){
-      clearInterval(this.liuchengtimer)
-    },
-    test() {
-      this.timer = setInterval(() => {
-        this.fetchType();
-      }, 2000);
-    },
-    clear() {
-      console.log("我要清除定时器");
-      clearInterval(this.timer);
-    },
-// 模拟扫码枪登录
-    async saomaqiang1(){
-      let res = this.$http.post(`/proline/station1/jnaScanner`,{
-  "positionId": "p1",
-  "equipmentId": "4",
-"data": {"code": this.item}
-});
-    console.log('我是第一次扫码枪',res)
-    },
-    async saomaqiang2(){
-      let res = this.$http.post(`/proline/station1/jnaScanner`,{
-  "positionId": "p1",
-  "equipmentId": "4",
-"data": {"code": "10001"}
-});
-console.log('我是第二次扫码枪',res)
-    },
-// 模拟扫码枪登录结束
-    async fetchlyp(){
-      this.addDate();
-      const positionId = localStorage.positionId;
-      const staffId = localStorage.staffId;
-      const staffName = localStorage.staffName;
-      const staffNum = localStorage.staffNum;
-      console.log('我是色很么',localStorage.userId,typeof(localStorage.userId))
-      var userId = ''
 
-      if(typeof(localStorage.userId) == 'undefined'){
-        userId = '#'
-      }
-      else{
-        userId = localStorage.userId.split("#")[0];
-      }
-      
-      // console.log('hi还hi',localStorage.userId)
-      if(positionId !== "" && typeof(positionId) !== undefined&&typeof(staffId) !== "undefined" 
-      && typeof(staffName) !== "undefined" && typeof(staffNum) !== "undefined" 
-      && staffId !== "" && staffName !== "" && staffNum !== "" &&this.systemTime == userId){
-        console.log('我是新的逻辑中直接跳转到work页面的人')
-        this.$router.push({ path: "/work" });
-      }
-      else{
-        await this.lunxun();
-        this.liucheng();
-        // 每两秒执行一次轮询查询
-      }
+    clearliucheng() {
+      clearInterval(this.liuchengtimer);
     },
-    async lunxun(){
-      const positionId = localStorage.positionId;
 
-      console.log(positionId !== "" && typeof(positionId) !== 'undefined')
-      if(positionId !== "" && typeof(positionId) !== 'undefined'){
-        console.log('1111')
-        var res = await this.$http.get(`/proline/station/getLoginCode?positionId=${localStorage.positionId}`);
-        if(res.data.code == 20000){
-          this.item = res.data.data;
-          localStorage.item = this.item;
-          // this.$router.push({ path: "/login2" });
-        }
-        
-      }else{
-        console.log('2222')
-        res = await this.$http.get(`/proline/station/getLoginCode`);
-        if(res.data.code == 20000){
-        console.log('生成二维码的信息',res)
+    async getLoginCode() {
+      var res = await this.$http.get(`/proline/station/getLoginCode`);
+      if (res.data.code == 20000) {
+        console.log("生成二维码的信息", res);
         this.item = res.data.data;
-          localStorage.item = this.item;
-          this.code = res.data.code;
-          var qrcode = new QRCode(this.$refs.qrCodeUrl, {
-            text: this.item, // 需要转换为二维码的内容
-            width: 100,
-            height: 100,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H,
-          });
-          // $(.qrcode).removeItem
-          console.log(qrcode);
-          console.log("获取二维码成功", this.item);
+        localStorage.item = this.item;
+        this.code = res.data.code;
+        var qrcode = new QRCode(this.$refs.qrCodeUrl, {
+          text: this.item, // 需要转换为二维码的内容
+          width: 100,
+          height: 100,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H,
+        });
+        // $(.qrcode).removeItem
+        console.log(qrcode);
+        console.log("获取二维码成功", this.item);
       }
-      }
-      console.log('我是第一次请求',res)
+      console.log("我是第一次请求", res);
     },
-    addDate () {
-      let nowDate = new Date()
-      let date = {
-       year: nowDate.getFullYear(),
-       month: nowDate.getMonth() + 1,
-       date: nowDate.getDate()
-      }
-      this.systemTime = date.year + '-' + date.month + '-' + date.date
-      console.log('我是当前年月日',this.systemTime)
-  },
-    async lunxun2(){
-      let res2 = await this.$http.get(`/proline/station/getLoginState?code=${this.item}`);
-      console.log('我是res2',res2)
-      if (res2.data.code == 20000) {
-        this.state = res2.data.data.state;
-        // 如果请求成功 记录 id num name position 四个信息，并且直接跳转
-        // 24小时后 删除 id num name 三者 position保留
-        // 取消 getLoginState 的轮询
-        if (this.state == "SUCCESS") {
-          // this.$message({ message: "登陆成功", type: "success" });
-          console.log("登陆成功");
-          localStorage.staffId = res2.data.data.staffId;
-          localStorage.staffName = res2.data.data.staffName;
-          localStorage.staffNum = res2.data.data.staffNum;
-          localStorage.positionId = res2.data.data.positionId;
-          localStorage.stationName = res2.data.data.stationName;
-          var userId = localStorage.userId.split("#")[0];
-          if(this.systemTime == userId){
-            console.log(1)
-            this.$router.push({ path: "/work" });
-          }
-          else{
-            console.log(2);
-            this.$router.push({ path: "/checklogin" });
-          }
-          
-          this.clearliucheng();
-          this.startTime();
-        } else if (this.state == "WAIT_STAFF_CODE") {
-          console.log("尚未获取到员工信息");
-          this.$router.push({ path: "/login2" });
-          // await this.saomaqiang2();
-        } else {
-          // await this.saomaqiang1();
-          console.log("尚未获取到信息");
-        }
-      }
-    },
-    async fetch() {
-      const positionId = localStorage.positionId;
-      const staffId = localStorage.staffId;
-      const staffName = localStorage.staffName;
-      const staffNum = localStorage.staffNum;
-      if (positionId !== "" && positionId !== undefined) {
-        //如果positionID 不为空 ，就不需要获取二维码了
-        //  查有没有员工状态  如果有 就跳到work界面
-        //                  如果没有 就跳到login2界面
-        // 如果positionID为空  重新获取二维码了 直接进行轮询 每两秒获取一次fetchType()
-        let res = await this.$http.get(`/proline/station/getLoginCode?positionId=${localStorage.positionId}`);
-        this.item = res.data.data
-        console.log('我是有工站信息直接跳转到工作页面',res,res.data.code)
-        if (res.data.code == 20000) {
-          if (typeof(staffId) !== "undefined" && typeof(staffName) !== "undefined" && typeof(staffNum) !== "undefined" && staffId !== "" && staffName !== "" && staffNum !== "") {
-          console.log('##',staffId,staffName,staffNum)
-          this.$router.push({ path: "/work" });
-        } else {
-          this.test();
-          // await this.fetchType();
-          // this.$router.push({ path: "/login2" });
-        }
-        }
-        
-      } 
-      else {
-        let res = await this.$http.get(`/proline/station/getLoginCode`);
-        console.log("我是res", res);
-        // 根据返回状态判断请求是否成功
-        if (res.data.code == 20000) {
-          this.item = res.data.data;
-          localStorage.item = this.item;
-          this.code = res.data.code;
-          var qrcode = new QRCode(this.$refs.qrCodeUrl, {
-            text: this.item, // 需要转换为二维码的内容
-            width: 100,
-            height: 100,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H,
-          });
-          console.log(qrcode);
-          console.log("获取二维码成功", this.item);
-          this.test(); //进行轮询 每两秒获取一次fetchType()
-          // this.$message({ message: res.data.message, type: "success" });
-        } else {
-          // this.$message({ message: "获取信息失败", type: "warning" });
-        }
-      }
-    },
+
     // 请求登陆码状态
-    async fetchType() {
+    async getLoginState() {
       let res = await this.$http.get(
         `/proline/station/getLoginState?code=${this.item}`
       );
-      console.log(res,this.item)
-      // console.log(
-      //   "我是login第二步请求登录码的真实数据",
-      //   this.item,
-      //   res.data.data.state
-      // );
-      // {staffId: '', staffName: '', staffNum: '', state: 'WAIT_QR_CODE'}
-      // 根据返回状态判断请求是否成功
       if (res.data.code == 20000) {
         this.state = res.data.data.state;
-
-        // 如果请求成功 记录 id num name position 四个信息，并且直接跳转
-        // 24小时后 删除 id num name 三者 position保留
-        // 取消 getLoginState 的轮询
-        if (this.state == "SUCCESS") {
-          // this.$message({ message: "登陆成功", type: "success" });
-          console.log("登陆成功");
-          localStorage.staffId = res.data.data.staffId;
-          localStorage.staffName = res.data.data.staffName;
-          localStorage.staffNum = res.data.data.staffNum;
-          localStorage.positionId = res.data.data.positionId;
-          localStorage.stationName = res.data.data.stationName;
-          this.$router.push({ path: "/work" });
-          this.clear();
-          this.startTime();
-        } else if (this.state == "WAIT_STAFF_CODE") {
-          
-          console.log("尚未获取到员工信息");
+        if (this.state == "WAIT_STAFF_CODE") {
+          console.log("login扫码成功");
+          window.sessionStorage.setItem("admin", "2");
+          // sessionStorage.admin = "2";
           this.$router.push({ path: "/login2" });
-          // this.$router.push({ path: "/checklogin" });
-          // await this.saomaqiang2();
         } else {
-          // await this.saomaqiang1();
-          console.log("尚未获取到信息");
+          console.log("login-等待员工扫码");
         }
       }
     },
@@ -302,29 +111,17 @@ console.log('我是第二次扫码枪',res)
         }, during);
       });
     },
-    async clearState() {
-      // localStorage.clear(); //localStorage.clear()是清除所有的存储内容
-      console.log("清除localstore信息成功！");
-      localStorage.removeItem("staffId"); //localStorage.clear()是清除这一项的存储内容
-      localStorage.removeItem("staffName");
-      localStorage.removeItem("staffNum");
-    },
   },
-  // created(){
-  //   this.fetch();
-  //   this.test();
-  // }
 
   async created() {
-    await this.fetchlyp();
-    // await this.fetch();
-    // await this.fetchType();
-    // await this.test();
-    //  this.clear();
+    await this.getLoginCode();
+    await this.liucheng();
   },
-
   mounted() {
-    localStorage.userId = '#';
+    localStorage.userId = "#";
+  },
+  destroyed() {
+    this.clearliucheng();
   },
 };
 </script>
@@ -385,13 +182,12 @@ body {
 /deep/.qrcode img {
   width: 200px;
   height: 200px;
-  background-color: black;
-  padding: 0 10px 10px 0;
+  background-color: white;
+  padding: 10px;
   box-sizing: border-box;
-
-  border-bottom: 3px solid;
-  border-right: 3px solid;
-  border-image: linear-gradient(to bottom, #3768d2, #71bed4) 1;
+  border-radius: 20px;
+  border: 3px solid;
+  /* border-image: linear-gradient(to bottom, #3768d2, #71bed4) 1; */
 }
 .main .MainContent .MainContentOne {
   top: 230px;
@@ -411,6 +207,7 @@ body {
   top: 230px;
   left: 20%;
   height: 400px;
+  /* alter by zze */
   /* margin: 230px auto; */
   width: 1000px;
 }
